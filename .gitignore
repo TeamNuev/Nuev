@@ -1,2 +1,8 @@
+# For IntelliJ IDEA
 .idea
 *.iml
+
+# For eclipse
+.classpath
+.project
+/bin/
