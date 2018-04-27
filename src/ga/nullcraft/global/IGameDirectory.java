@@ -9,5 +9,7 @@ public interface IGameDirectory {
     WorldStorage getWorldStorage();
 
     ConfigStorage getConfigStorage(IMod mod);
+
+	ModStorage getModStorage();
 }
 
