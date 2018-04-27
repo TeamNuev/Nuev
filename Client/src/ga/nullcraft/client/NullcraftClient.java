@@ -15,7 +15,7 @@ public class NullcraftClient {
     }
 
     public static void main(String[] args){
-    	modLoader = new ModLoader(gameDirectory);
+    	modLoader = new ModLoader(gameDirectory.getModStorage());
     	modLoader.loadMods();
     }
 }
