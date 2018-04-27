@@ -17,10 +17,10 @@ public class ConfigStorage extends Storage<File> {
     }
 
     /**
-     * 해당 모드 config 저장소 경로에 name 이름의 파일을 저장합니다
+     * Saves a file in a config path of the mod.
      *
-     * @param  name 저장할 파일의 이름
-     * @return      성공시 true, 실패시 false 반환
+     * @param name A name of a file which is going to be saved
+     * @return true if succeed
      */
     @Override
     public boolean saveSync(File object, String name) throws IOException {
@@ -28,10 +28,10 @@ public class ConfigStorage extends Storage<File> {
     }
 
     /**
-     * 해당 모드 config 저장소 경로에서 name 이름의 파일을 불러옵니다
+     * Loads a file in a config path of the mod.
      *
-     * @param  name 불러올 파일의 이름
-     * @return      name 이름을 가진 파일. 없을시 null 반환
+     * @param name A name of a file which is going to be loaded
+     * @return A file named name. null if doesn't exist.
      */
     @Override
     public File getSync(String name) throws IOException {

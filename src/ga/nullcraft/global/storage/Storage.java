@@ -5,11 +5,11 @@ import ga.nullcraft.util.AsyncTask;
 import java.io.IOException;
 
 /**
- * Storage는 문자열을 key로 받아 io 작업을 처리 하게
- * 됩니다. key로 받을수 있는 문자열에는 규칙성이 있어야
- * 하며(경로, 파일 이름, 웹 주소 등등), 같은 key 값은 무조건 같은 반환값을 반환해야 합니다.
+ * Does I/O tasks.
+ * key should be a path(local path, file name, web address, etc).
+ * Must return same value if key is same.
  *
- * @author      storycraft
+ * @author TNuev
  */
 public abstract class Storage<T> {
     public abstract boolean saveSync(T object, String name) throws IOException;
