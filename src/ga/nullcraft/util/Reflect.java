@@ -9,11 +9,11 @@ public class Reflect {
         return getField(obj.getClass(), obj, name);
     }
 
-    public static <T>T getField(Class c, String name) {
+    public static <T>T getField(Class<?> c, String name) {
         return getField(c, null, name);
     }
 
-    public static <T>T getField(Class c, Object obj, String name) {
+    public static <T>T getField(Class<?> c, Object obj, String name) {
         try {
             Field field = getDeclaredField(c, name);
 
@@ -25,7 +25,7 @@ public class Reflect {
         return null;
     }
 
-    public static void setField(Class c, Object obj, String name, Object value) {
+    public static void setField(Class<?> c, Object obj, String name, Object value) {
         try {
             Field field = getDeclaredField(c, name);
 
@@ -39,11 +39,11 @@ public class Reflect {
         setField(obj.getClass(), obj, name, value);
     }
 
-    public static void setField(Class c, String name, Object value) {
+    public static void setField(Class<?> c, String name, Object value) {
         setField(c, null, name, value);
     }
 
-    private static Field getDeclaredField(Class c, String name) {
+    private static Field getDeclaredField(Class<?> c, String name) {
         try {
             Field field = c.getDeclaredField(name);
             field.setAccessible(true);
@@ -60,13 +60,13 @@ public class Reflect {
         return invokeMethod(obj.getClass(), obj, name, params);
     }
 
-    public static <T>T invokeMethod(Class c, String name, Object... params) {
+    public static <T>T invokeMethod(Class<?> c, String name, Object... params) {
         return invokeMethod(c, null, name, params);
     }
 
-    public static <T>T invokeMethod(Class c, Object obj, String name, Object... params) {
+    public static <T>T invokeMethod(Class<?> c, Object obj, String name, Object... params) {
         try {
-            Class[] classes = new Class[params.length];
+            Class<?>[] classes = new Class<?>[params.length];
 
             for (int i = 0; i < params.length; i++){
                 classes[i] = params.getClass();
@@ -83,7 +83,7 @@ public class Reflect {
         return null;
     }
 
-    private static Method getDeclaredMethod(Class c, String name, Class... classes) {
+    private static Method getDeclaredMethod(Class<?> c, String name, Class<?>... classes) {
         try {
             Method method = c.getDeclaredMethod(name, classes);
             method.setAccessible(true);

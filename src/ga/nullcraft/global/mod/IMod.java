@@ -2,6 +2,12 @@ package ga.nullcraft.global.mod;
 
 import java.util.UUID;
 
+/**
+ * A basic mod interface.
+ * 
+ * @author TNuev
+ * 
+ */
 public interface IMod {
     String getName();
 

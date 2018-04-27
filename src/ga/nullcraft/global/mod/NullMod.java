@@ -2,6 +2,13 @@ package ga.nullcraft.global.mod;
 
 import java.util.UUID;
 
+/**
+ * A basic mod class.
+ * You can declare mod by extending this class.
+ * 
+ * @author TNuev
+ *
+ */
 public abstract class NullMod implements IMod {
     private final String name;
 
