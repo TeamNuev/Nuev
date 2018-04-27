@@ -3,6 +3,12 @@ package ga.nullcraft.global.registry;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Manages Registries.
+ * 
+ * @author TNuev
+ *
+ */
 public class RegistryManager {
 
     private Map<String, IRegistry> registryMap;

@@ -1,9 +1,11 @@
 package ga.nullcraft.client;
 
 import ga.nullcraft.client.local.GameDirectory;
+import ga.nullcraft.global.mod.ModLoader;
 
 public class NullcraftClient {
-    private GameDirectory gameDirectory;
+    private static GameDirectory gameDirectory;
+    private static ModLoader modLoader;
 
     public NullcraftClient(){
 
