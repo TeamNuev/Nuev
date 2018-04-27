@@ -1,5 +1,7 @@
 package ga.nullcraft.client;
 
+import ga.nullcraft.client.local.GameDirectory;
+
 public class NullcraftClient {
     private GameDirectory gameDirectory;
 

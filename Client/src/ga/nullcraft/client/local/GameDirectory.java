@@ -1,4 +1,4 @@
-package ga.nullcraft.client;
+package ga.nullcraft.client.local;
 
 import ga.nullcraft.global.IGameDirectory;
 import ga.nullcraft.global.mod.IMod;
