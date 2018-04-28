@@ -3,6 +3,7 @@ package ga.nullcraft.global.storage;
 import ga.nullcraft.util.AsyncTask;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Does I/O tasks.
@@ -12,7 +13,7 @@ import java.io.IOException;
  * @author TNuev
  */
 public abstract class Storage<T> {
-    public abstract boolean saveSync(T object, String name) throws IOException;
+    public abstract boolean saveSync(T object, String name) throws IOException, NoSuchAlgorithmException;
 
     public AsyncTask<Boolean> saveAsync(T object, String name) throws IOException{
         return new AsyncTask<>(new AsyncTask.AsyncCallable<Boolean>() {

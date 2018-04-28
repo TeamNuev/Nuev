@@ -1,17 +1,20 @@
 package ga.nullcraft.client;
 
-import ga.nullcraft.client.local.GameDirectory;
+import ga.nullcraft.client.local.LocalGameDirectory;
+import ga.nullcraft.global.IGameDirectory;
 import ga.nullcraft.global.mod.ModLoader;
 
+import java.nio.file.Path;
+
 public class NullcraftClient {
-    private static GameDirectory gameDirectory;
+    private static LocalGameDirectory gameDirectory;
     private static ModLoader modLoader;
 
-    public NullcraftClient(){
-
+    public NullcraftClient(Path dataDir){
+        this.gameDirectory = new LocalGameDirectory(dataDir);
     }
 
-    public GameDirectory getGameDirectory() {
+    public LocalGameDirectory getGameDirectory() {
         return gameDirectory;
     }
 

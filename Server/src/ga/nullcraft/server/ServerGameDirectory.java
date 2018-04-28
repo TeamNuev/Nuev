@@ -1,4 +1,4 @@
-package ga.nullcraft.client.local;
+package ga.nullcraft.server;
 
 import ga.nullcraft.global.IGameDirectory;
 import ga.nullcraft.global.mod.IMod;
@@ -8,11 +8,11 @@ import ga.nullcraft.global.storage.WorldStorage;
 
 import java.nio.file.Path;
 
-public class GameDirectory implements IGameDirectory {
+public class ServerGameDirectory implements IGameDirectory {
 
     private Path path;
 
-    public GameDirectory(Path path){
+    public ServerGameDirectory(Path path){
         this.path = path;
     }
 
@@ -22,16 +22,16 @@ public class GameDirectory implements IGameDirectory {
 
     @Override
     public WorldStorage getWorldStorage() {
-        return null;
+        return new WorldStorage(path.resolve("world"));
     }
 
     @Override
     public ModStorage getModStorage() {
-        return null;
+        return new ModStorage(path.resolve("mods"));
     }
 
     @Override
     public ConfigStorage getConfigStorage(IMod mod) {
-        return null;
+        return new ConfigStorage(path.resolve("config"), mod);
     }
 }
