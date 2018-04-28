@@ -4,7 +4,7 @@ import ga.nullcraft.global.IGameDirectory;
 
 /**
  * an abstract server class.
- * GameDirectory which is used in server
+ * ServerGameDirectory which is used in server
  * can be set by overriding getGameDirectory method.
  *
  * @author TNuev
