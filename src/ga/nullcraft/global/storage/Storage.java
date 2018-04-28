@@ -13,8 +13,27 @@ import java.security.NoSuchAlgorithmException;
  * @author TNuev
  */
 public abstract class Storage<T> {
+	
+	/**
+	 * Saves an object into file.
+	 * 
+	 * @param object to be saved
+	 * @param name
+	 * @return true if succeed
+	 * @throws IOException
+	 * @throws NoSuchAlgorithmException
+	 */
     public abstract boolean saveSync(T object, String name) throws IOException, NoSuchAlgorithmException;
 
+    /**
+     * Saves an object into file.
+     * Calls {@link Storage#saveSync(Object, String)} asynchronously.
+     * 
+     * @param object to be saved.
+     * @param name
+     * @return
+     * @throws IOException
+     */
     public AsyncTask<Boolean> saveAsync(T object, String name) throws IOException{
         return new AsyncTask<>(new AsyncTask.AsyncCallable<Boolean>() {
             @Override
@@ -30,8 +49,22 @@ public abstract class Storage<T> {
         });
     }
 
+    /**
+     * Get objects from file.
+     * 
+     * @param name
+     * @return
+     * @throws IOException
+     */
     public abstract T getSync(String name) throws IOException;
 
+    /**
+     * Get objects from file.
+     * Calls {@link Storage#getSync(String)} asynchronously.
+     * 
+     * @param name
+     * @return
+     */
     public AsyncTask<T> getAsync(String name){
         return new AsyncTask<>(new AsyncTask.AsyncCallable<T>() {
             @Override

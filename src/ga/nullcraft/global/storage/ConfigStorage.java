@@ -19,7 +19,7 @@ public class ConfigStorage extends Storage<File> {
     /**
      * Saves a file in a config path of the mod.
      *
-     * @param name A name of a file which is going to be saved
+     * @param name of a file which is going to be saved
      * @return true if succeed
      */
     @Override
@@ -30,7 +30,7 @@ public class ConfigStorage extends Storage<File> {
     /**
      * Loads a file in a config path of the mod.
      *
-     * @param name A name of a file which is going to be loaded
+     * @param name of a file which is going to be loaded
      * @return A file named name. null if doesn't exist.
      */
     @Override

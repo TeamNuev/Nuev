@@ -26,7 +26,7 @@ public class AssetStorage extends Storage<byte[]> {
     /**
      * Saves a file in the game assets directory.
      *
-     * @param name A name with a path of a file which is going to be saved.
+     * @param name with a path of a file which is going to be saved.
      * @return true if succeed
      */
     @Override
@@ -78,6 +78,13 @@ public class AssetStorage extends Storage<byte[]> {
         }
     }
 
+    /**
+     * Makes hash value from path.
+     * 
+     * @param path to be made into hash value.
+     * @return hash value made from path.
+     * @throws NoSuchAlgorithmException
+     */
     private String getHashsum(String path) throws NoSuchAlgorithmException {
         MessageDigest md5 = MessageDigest.getInstance("MD5");
         md5.update(path.getBytes());
