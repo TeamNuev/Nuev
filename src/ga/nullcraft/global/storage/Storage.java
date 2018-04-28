@@ -21,7 +21,7 @@ public abstract class Storage<T> {
             public Boolean get() {
                 try {
                     return saveSync(object, name);
-                } catch (IOException e) {
+                } catch (IOException | NoSuchAlgorithmException e) {
                     e.printStackTrace();
                 }
 
