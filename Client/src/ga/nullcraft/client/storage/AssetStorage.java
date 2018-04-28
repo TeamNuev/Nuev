@@ -31,18 +31,19 @@ public class AssetStorage extends Storage<byte[]> {
      */
     @Override
     public boolean saveSync(byte[] data, String name) throws IOException {
-        try {
-            String hash = getHashsum(name);
-            String prefix = hash.substring(0, 1);
+        File file = getFilePointer(name);
 
-            File file = path.resolve(prefix).resolve(hash).toFile();
-            OutputStream writer = new FileOutputStream(file);
-
-            writer.write(data);
-            writer.close();
-        } catch (NoSuchAlgorithmException e) {
+        if (file == null)
             return false;
-        }
+
+        if (!file.exists())
+            if (!file.createNewFile())
+                throw new IOException();
+
+        OutputStream writer = new FileOutputStream(file);
+
+        writer.write(data);
+        writer.close();
 
         return true;
     }
@@ -55,24 +56,34 @@ public class AssetStorage extends Storage<byte[]> {
      */
     @Override
     public byte[] getSync(String name) throws IOException {
-        try {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
+        File file = getFilePointer(name);
+        if (!file.exists())
+            return null;
+
+        FileInputStream input = new FileInputStream(file);
+
+        int readed = 0;
+        byte[] buffer = new byte[2048];
+        while ((readed = input.read(buffer)) != -1)
+            out.write(buffer, 0, readed);
+
+        return out.toByteArray();
+    }
+
+    /**
+     * Get file object from its path.
+     *
+     * @param name file path
+     * @return hash value file object.
+     */
+    private File getFilePointer(String name){
+        try {
             String hash = getHashsum(name);
             String prefix = hash.substring(0, 1);
 
-            File file = path.resolve(prefix).resolve(hash).toFile();
-            if (!file.exists())
-                return null;
-
-            FileInputStream input = new FileInputStream(file);
-
-            int readed = 0;
-            byte[] buffer = new byte[2048];
-            while ((readed = input.read(buffer)) != -1)
-                out.write(buffer, 0, readed);
-
-            return out.toByteArray();
+            return this.path.resolve(prefix).resolve(hash).toFile();
         } catch (NoSuchAlgorithmException e) {
             return null;
         }

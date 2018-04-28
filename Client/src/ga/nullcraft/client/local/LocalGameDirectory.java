@@ -1,6 +1,7 @@
 package ga.nullcraft.client.local;
 
 import ga.nullcraft.client.storage.AssetStorage;
+import ga.nullcraft.client.storage.CacheStorage;
 import ga.nullcraft.global.IGameDirectory;
 import ga.nullcraft.global.mod.IMod;
 import ga.nullcraft.global.storage.ConfigStorage;
@@ -23,6 +24,10 @@ public class LocalGameDirectory implements IGameDirectory {
 
     public AssetStorage getAssetStorage() {
         return new AssetStorage(path.resolve("assets"));
+    }
+
+    public CacheStorage getCacheStorage(){
+        return new CacheStorage(path.resolve(".data"));
     }
 
     @Override

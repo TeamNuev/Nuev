@@ -23,7 +23,7 @@ public abstract class Storage<T> {
 	 * @throws IOException
 	 * @throws NoSuchAlgorithmException
 	 */
-    public abstract boolean saveSync(T object, String name) throws IOException, NoSuchAlgorithmException;
+    public abstract boolean saveSync(T object, String name) throws IOException;
 
     /**
      * Saves an object into file.
@@ -40,7 +40,7 @@ public abstract class Storage<T> {
             public Boolean get() {
                 try {
                     return saveSync(object, name);
-                } catch (IOException | NoSuchAlgorithmException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
 
