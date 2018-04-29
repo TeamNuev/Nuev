@@ -1,4 +1,4 @@
-package ga.nullcraft.client.graphics;
+package ga.nullcraft.client.window;
 
 /**
  * Manage game window
