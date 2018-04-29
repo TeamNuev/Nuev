@@ -5,6 +5,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.lwjgl.glfw.GLFW;
+
 import ga.nullcraft.client.audio.AudioManager;
 import ga.nullcraft.client.graphics.WindowManager;
 import ga.nullcraft.client.local.LocalGameDirectory;
@@ -79,4 +81,5 @@ public class NullcraftClient {
     	modLoader = new ModLoader(client.gameDirectory.getModStorage());
     	modLoader.loadMods();
     }
+
 }

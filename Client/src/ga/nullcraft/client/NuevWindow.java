@@ -1,5 +1,7 @@
 package ga.nullcraft.client;
 
+import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
+
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.nio.IntBuffer;
@@ -23,7 +25,7 @@ public class NuevWindow {
 	private long window;
 	private final int WIDTH;
 	private final int HEIGHT;
-	private final boolean FULL_SCREEN;
+	private boolean FULL_SCREEN;
 
 	NuevWindow(int width, int height, boolean isFullScreen) {
 		this.WIDTH = (width > 0) ? width : DEFAULT_WIDTH;
@@ -117,6 +119,9 @@ public class NuevWindow {
 		// Run the rendering loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key.
 		while (!GLFW.glfwWindowShouldClose(window)) {
+			//fk temp
+			if(isKeyPressed(GLFW.GLFW_KEY_F11)) setScreenMode(!FULL_SCREEN);
+			
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
 			GLFW.glfwSwapBuffers(window); // swap the color buffers
@@ -125,6 +130,22 @@ public class NuevWindow {
 			// invoked during this call.
 			GLFW.glfwPollEvents();
 		}
+	}
+	
+	public boolean isKeyReleased(int key) {
+		return GLFW.glfwGetKey(window, key) == GLFW.GLFW_RELEASE;
+	}
+	
+	public boolean isKeyPressed(int key) {
+		return GLFW.glfwGetKey(window, key) == GLFW.GLFW_PRESS;
+	}
+	
+	public boolean isKeyRepeated(int key) {
+		return GLFW.glfwGetKey(window, key) == GLFW.GLFW_REPEAT;
+	}
+	
+	public boolean windowShouldClose() {
+		return GLFW.glfwWindowShouldClose(window);
 	}
 	
 	public long getWindowHandle() {
@@ -141,5 +162,11 @@ public class NuevWindow {
 	
 	public boolean isFullScreen() {
 		return FULL_SCREEN;
+	}
+	
+	public void setScreenMode(boolean isFullScreen) {
+		FULL_SCREEN = isFullScreen;
+		GLFW.glfwDestroyWindow(window);
+		init();
 	}
 }
