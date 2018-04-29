@@ -1,5 +1,7 @@
 package ga.nullcraft.client.resource;
 
-public class AssetLoader {
+import ga.nullcraft.global.resource.IResourceLoader;
+
+public class AssetLoader implements IResourceLoader<byte[]> {
 
 }
