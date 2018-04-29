@@ -1,12 +1,9 @@
 package ga.nullcraft.client;
 
-import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
-
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.nio.IntBuffer;
 
-import org.lwjgl.Version;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -16,7 +13,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
-public class NuevWindow extends Thread {
+public class NuevWindow {
 	
 	private final int DEFAULT_WIDTH = 800;
 	private final int DEFAULT_HEIGHT = 500;
@@ -26,6 +23,7 @@ public class NuevWindow extends Thread {
 	private final int WIDTH;
 	private final int HEIGHT;
 	private boolean FULL_SCREEN;
+	private boolean isScreenChanged = false;
 
 	NuevWindow(int width, int height, boolean isFullScreen) {
 		this.WIDTH = (width > 0) ? width : DEFAULT_WIDTH;
@@ -33,22 +31,7 @@ public class NuevWindow extends Thread {
 		this.FULL_SCREEN = isFullScreen;
 	}
 
-	public void run() {
-		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
-
-		init();
-		loop();
-
-		// Free the window callbacks and destroy the window
-		Callbacks.glfwFreeCallbacks(window);
-		GLFW.glfwDestroyWindow(window);
-
-		// Terminate GLFW and free the error callback
-		GLFW.glfwTerminate();
-		GLFW.glfwSetErrorCallback(null).free();
-	}
-
-	private void init() {
+	void init() {
 		// Setup an error callback. The default implementation
 		// will print the error message in System.err.
 		GLFWErrorCallback.createPrint(System.err).set();
@@ -61,6 +44,12 @@ public class NuevWindow extends Thread {
 		GLFW.glfwDefaultWindowHints(); // optional, the current window hints are already the default
 		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE); // the window will stay hidden after creation
 		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE); // the window will be resizable
+		
+		//For OSX
+		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3);
+		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 2);
+		GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
+		GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_FORWARD_COMPAT, GLFW.GLFW_TRUE);
 
 		// Create the window
 		if(FULL_SCREEN) {
@@ -115,23 +104,38 @@ public class NuevWindow extends Thread {
 
 	}
 
-	private void loop() {
+	void loop() {
 		// Run the rendering loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key.
-		while (!GLFW.glfwWindowShouldClose(window)) {
-			//fk temp
-			if(isKeyPressed(GLFW.GLFW_KEY_F11)) setScreenMode(!FULL_SCREEN);
-			
-			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT); // clear the framebuffer
-
-			GLFW.glfwSwapBuffers(window); // swap the color buffers
-
-			// Poll for window events. The key callback above will only be
-			// invoked during this call.
-			GLFW.glfwPollEvents();
+		// fk temp
+		if (isKeyPressed(GLFW.GLFW_KEY_F11)) {
+			if (!isScreenChanged) {
+				isScreenChanged = true;
+				setScreenMode(!FULL_SCREEN);
+			}
+		} else {
+			isScreenChanged = false;
 		}
+
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+
+		GLFW.glfwSwapBuffers(window); // swap the color buffers
+
+		// Poll for window events. The key callback above will only be
+		// invoked during this call.
+		GLFW.glfwPollEvents();
 	}
 	
+	void close() {
+		// Free the window callbacks and destroy the window
+		Callbacks.glfwFreeCallbacks(window);
+		GLFW.glfwDestroyWindow(window);
+
+		// Terminate GLFW and free the error callback
+		GLFW.glfwTerminate();
+		GLFW.glfwSetErrorCallback(null).free();
+	}
+
 	public boolean isKeyReleased(int key) {
 		return GLFW.glfwGetKey(window, key) == GLFW.GLFW_RELEASE;
 	}
