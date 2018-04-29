@@ -1,4 +1,10 @@
 package ga.nullcraft.server.resource;
 
-public class ServerModLoader {
+import ga.nullcraft.global.mod.ModLoader;
+import ga.nullcraft.global.storage.ModStorage;
+
+public class ServerModLoader extends ModLoader {
+    public ServerModLoader(ModStorage modStorage) {
+        super(modStorage);
+    }
 }
