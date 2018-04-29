@@ -1,6 +1,8 @@
 package ga.nullcraft.client;
 
 import org.lwjgl.*;
+import org.lwjgl.glfw.*;
+import org.lwjgl.opengl.*;
 
 import java.nio.*;
 
@@ -84,19 +86,20 @@ public class NuevWindow {
 
 		// Make the window visible
 		GLFW.glfwShowWindow(window);
-	}
-
-	private void loop() {
+		
 		// This line is critical for LWJGL's interoperation with GLFW's
 		// OpenGL context, or any context that is managed externally.
 		// LWJGL detects the context that is current in the current thread,
 		// creates the GLCapabilities instance and makes the OpenGL
 		// bindings available for use.
 		GL.createCapabilities();
-
+		
 		// Set the clear color
 		GL11.glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
 
+	}
+
+	private void loop() {
 		// Run the rendering loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key.
 		while (!GLFW.glfwWindowShouldClose(window)) {
@@ -108,5 +111,21 @@ public class NuevWindow {
 			// invoked during this call.
 			GLFW.glfwPollEvents();
 		}
+	}
+	
+	public long getWindowHandle() {
+		return window;
+	}
+	
+	public int getWidth() {
+		return WIDTH;
+	}
+	
+	public int getHeight() {
+		return HEIGHT;
+	}
+	
+	public boolean isFullScreen() {
+		return FULL_SCREEN;
 	}
 }
