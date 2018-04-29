@@ -1,15 +1,24 @@
 package ga.nullcraft.client;
 
-import org.lwjgl.*;
-import org.lwjgl.glfw.*;
-import org.lwjgl.opengl.*;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.nio.IntBuffer;
 
-import java.nio.*;
-
+import org.lwjgl.Version;
+import org.lwjgl.glfw.Callbacks;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
 public class NuevWindow {
+	
+	private final int DEFAULT_WIDTH = 800;
+	private final int DEFAULT_HEIGHT = 500;
+	
 	// The window handle
 	private long window;
 	private final int WIDTH;
@@ -17,8 +26,8 @@ public class NuevWindow {
 	private final boolean FULL_SCREEN;
 
 	NuevWindow(int width, int height, boolean isFullScreen) {
-		this.WIDTH = width;
-		this.HEIGHT = height;
+		this.WIDTH = (width > 0) ? width : DEFAULT_WIDTH;
+		this.HEIGHT = (height > 0) ? height : DEFAULT_HEIGHT;
 		this.FULL_SCREEN = isFullScreen;
 	}
 
@@ -52,10 +61,15 @@ public class NuevWindow {
 		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE); // the window will be resizable
 
 		// Create the window
-		window = GLFW.glfwCreateWindow(WIDTH, HEIGHT, "Nuev", MemoryUtil.NULL, MemoryUtil.NULL);
+		if(FULL_SCREEN) {
+			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+			window = GLFW.glfwCreateWindow(screenSize.width, screenSize.height, "Nuev", GLFW.glfwGetPrimaryMonitor(), MemoryUtil.NULL);
+		} else {
+			window = GLFW.glfwCreateWindow(WIDTH, HEIGHT, "Nuev", MemoryUtil.NULL, MemoryUtil.NULL);
+		}
 		if (window == MemoryUtil.NULL)
 			throw new RuntimeException("Failed to create the GLFW window");
-
+		
 		// Setup a key callback. It will be called every time a key is pressed, repeated
 		// or released.
 		GLFW.glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
@@ -95,7 +109,7 @@ public class NuevWindow {
 		GL.createCapabilities();
 		
 		// Set the clear color
-		GL11.glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+		GL11.glClearColor(78.0F/255, 208.0F/255, 170.0F/255, 0.0F);
 
 	}
 
