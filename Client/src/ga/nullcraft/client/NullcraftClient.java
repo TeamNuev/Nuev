@@ -52,7 +52,7 @@ public class NullcraftClient {
     }
 
 	public static void main(String[] args){
-		String defaultPath = System.getProperty("user.home") + File.separator + "Nuev";
+		Path defaultPath = Paths.get(System.getProperty("user.home"), "Nuev");
 		
 		//Parsing arguments
     	OptionParser parser = new OptionParser();
@@ -62,17 +62,19 @@ public class NullcraftClient {
     	parser.accepts("fullscreen");
     	parser.accepts("userToken");
     	parser.accepts("gameDir");
+
     	ArgumentAcceptingOptionSpec<Integer> width = parser.accepts("width").withOptionalArg().ofType(Integer.class).defaultsTo(800);
     	ArgumentAcceptingOptionSpec<Integer> height = parser.accepts("height").withOptionalArg().ofType(Integer.class).defaultsTo(500);
     	ArgumentAcceptingOptionSpec<Boolean> isFullScreen = parser.accepts("fullscreen").withOptionalArg().ofType(Boolean.class).defaultsTo(false);
     	ArgumentAcceptingOptionSpec<String> userToken = parser.accepts("userToken").withOptionalArg().ofType(String.class);
-    	ArgumentAcceptingOptionSpec<String> gameDir = parser.accepts("gameDir").withOptionalArg().ofType(String.class).defaultsTo(defaultPath);
+    	ArgumentAcceptingOptionSpec<String> gameDir = parser.accepts("gameDir").withOptionalArg().ofType(String.class).defaultsTo(defaultPath.toString());
     	NonOptionArgumentSpec<String> nonOptions = parser.nonOptions();
+
     	OptionSet options = parser.parse(args);
     	List<String> nonOptionList = options.valuesOf(nonOptions);
 
-    	NullcraftClient client = new NullcraftClient(Paths.get((String)options.valueOf(gameDir)));
-    	NuevWindow testWindow = new NuevWindow((int)options.valueOf(width), (int)options.valueOf(height), (boolean)options.valueOf(isFullScreen));
+    	NullcraftClient client = new NullcraftClient(Paths.get(options.valueOf(gameDir)));
+    	NuevWindow testWindow = new NuevWindow(options.valueOf(width), options.valueOf(height), options.valueOf(isFullScreen));
     	testWindow.run();
     	modLoader = new ModLoader(client.gameDirectory.getModStorage());
     	modLoader.loadMods();
