@@ -23,7 +23,6 @@ public class NuevWindow {
 	private final int WIDTH;
 	private final int HEIGHT;
 	private boolean FULL_SCREEN;
-	private boolean isScreenChanged = false;
 
 	NuevWindow(int width, int height, boolean isFullScreen) {
 		this.WIDTH = (width > 0) ? width : DEFAULT_WIDTH;
@@ -109,12 +108,7 @@ public class NuevWindow {
 		// the window or has pressed the ESCAPE key.
 		// fk temp
 		if (isKeyPressed(GLFW.GLFW_KEY_F11)) {
-			if (!isScreenChanged) {
-				isScreenChanged = true;
-				setScreenMode(!FULL_SCREEN);
-			}
-		} else {
-			isScreenChanged = false;
+			setScreenMode(!FULL_SCREEN);
 		}
 
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT); // clear the framebuffer
