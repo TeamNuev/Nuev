@@ -22,4 +22,8 @@ public class ModStorage extends Storage<IMod> {
     public IMod getSync(String name) {
         return null;
     }
+    
+    public Path getPath() {
+    	return path;
+    }
 }

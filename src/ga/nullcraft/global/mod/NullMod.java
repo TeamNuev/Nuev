@@ -17,26 +17,26 @@ public abstract class NullMod implements IMod {
 
     private final String version;
 
-    public NullMod(String name, UUID uuid, String namespace, String version){
+    public NullMod(String name, UUID uuid, String namespace, String version) {
         this.name = name;
         this.guid = uuid;
         this.namespace = namespace;
         this.version = version;
     }
 
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
-    public UUID getGuid() {
+    public final UUID getGuid() {
         return guid;
     }
 
-    public String getNamespace() {
+    public final String getNamespace() {
         return namespace;
     }
 
-    public String getVersion() {
+    public final String getVersion() {
         return version;
     }
 }

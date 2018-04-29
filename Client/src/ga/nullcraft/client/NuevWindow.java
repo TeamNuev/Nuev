@@ -14,7 +14,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
-public class NuevWindow {
+public class NuevWindow extends Thread {
 	
 	private final int DEFAULT_WIDTH = 800;
 	private final int DEFAULT_HEIGHT = 500;

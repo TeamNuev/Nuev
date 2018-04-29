@@ -1,9 +1,9 @@
 package ga.nullcraft.global.storage;
 
-import ga.nullcraft.util.AsyncTask;
-
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+
+import ga.nullcraft.util.AsyncTask;
 
 /**
  * Does I/O tasks.
