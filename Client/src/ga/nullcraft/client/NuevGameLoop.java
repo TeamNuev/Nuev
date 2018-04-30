@@ -2,10 +2,12 @@ package ga.nullcraft.client;
 
 public class NuevGameLoop {
 	
+	private NullcraftClient game;
 	private NuevWindow window;
 	
-	public NuevGameLoop(NuevWindow window) {
-		this.window = window;
+	public NuevGameLoop(NullcraftClient game) {
+		this.game = game;
+		this.window = game.getWindow();
 	}
 	
 	protected void gameLoop() {
@@ -24,6 +26,8 @@ public class NuevGameLoop {
 				updateGameState();
 				steps -= secsPerUpdate;
 			}
+			
+			render();
 			window.loop();
 			sync(loopStartTime);
 		}
@@ -40,10 +44,14 @@ public class NuevGameLoop {
 	}
 	
 	protected void handleInput() {
-		
+		game.input();
 	}
 	
 	protected void updateGameState() {
-		
+		game.update();
+	}
+	
+	protected void render() {
+		game.render();
 	}
 }

@@ -4,10 +4,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
+
 import ga.nullcraft.client.audio.AudioManager;
 import ga.nullcraft.client.local.LocalGameDirectory;
 import ga.nullcraft.client.model.ModelManager;
-import ga.nullcraft.client.resource.ShaderLoader;
 import ga.nullcraft.client.storage.TempStorage;
 import ga.nullcraft.client.window.WindowManager;
 import ga.nullcraft.global.mod.LocalModLoader;
@@ -32,6 +34,10 @@ public class NullcraftClient {
     public NullcraftClient(Path dataDir){
         this.gameDirectory = new LocalGameDirectory(dataDir);
         this.tempStorage = new TempStorage();
+    }
+    
+    public NuevWindow getWindow() {
+    	return testWindow;
     }
 
     public LocalGameDirectory getGameDirectory() {
@@ -80,15 +86,30 @@ public class NullcraftClient {
 
     	testWindow = new NuevWindow(options.valueOf(width), options.valueOf(height), options.valueOf(isFullScreen));
         testWindow.init();
-        gameLoop = new NuevGameLoop(testWindow);
+        gameLoop = new NuevGameLoop(client);
     	modLoader = new LocalModLoader(client.gameDirectory.getModStorage());
     	modLoader.loadMods();
-    	//testcode
-    	ShaderLoader sloader = new ShaderLoader();
-    	sloader.loadShader("vertex.vs");
-    	sloader.loadShader("fragment.fs");
     	gameLoop.gameLoop();
     	testWindow.close();
     }
+	
+	public void input() {
+		
+	}
+	
+	public void update() {
+		if (testWindow.isKeyPressed(GLFW.GLFW_KEY_F11)) {
+			testWindow.setScreenMode(!testWindow.isFullScreen());
+		}
+
+	}
+	
+	public void render() {
+        if (testWindow.isResized()) {
+            GL11.glViewport(0, 0, testWindow.getWidth(), testWindow.getHeight());
+            testWindow.setResized(false);
+        }
+        testWindow.clear();
+	}
 
 }
