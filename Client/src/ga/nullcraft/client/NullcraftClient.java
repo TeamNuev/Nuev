@@ -7,6 +7,7 @@ import java.util.List;
 import ga.nullcraft.client.audio.AudioManager;
 import ga.nullcraft.client.local.LocalGameDirectory;
 import ga.nullcraft.client.model.ModelManager;
+import ga.nullcraft.client.resource.ShaderLoader;
 import ga.nullcraft.client.storage.TempStorage;
 import ga.nullcraft.client.window.WindowManager;
 import ga.nullcraft.global.mod.LocalModLoader;
@@ -53,7 +54,7 @@ public class NullcraftClient {
         return tempStorage;
     }
 
-	public static void main(String[] args){
+	public static void main(String[] args) throws Exception {
 		Path defaultPath = Paths.get(System.getProperty("user.home"), "Nuev");
 		
 		//Parsing arguments
@@ -82,6 +83,10 @@ public class NullcraftClient {
         gameLoop = new NuevGameLoop(testWindow);
     	modLoader = new LocalModLoader(client.gameDirectory.getModStorage());
     	modLoader.loadMods();
+    	//testcode
+    	ShaderLoader sloader = new ShaderLoader();
+    	sloader.loadShader("vertex.vs");
+    	sloader.loadShader("fragment.fs");
     	gameLoop.gameLoop();
     	testWindow.close();
     }
