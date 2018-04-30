@@ -26,6 +26,7 @@ public class NullcraftClient {
     private TempStorage tempStorage;
     
     private static NuevWindow testWindow;
+    private static NuevGameLoop gameLoop;
 
     public NullcraftClient(Path dataDir){
         this.gameDirectory = new LocalGameDirectory(dataDir);
@@ -78,39 +79,11 @@ public class NullcraftClient {
 
     	testWindow = new NuevWindow(options.valueOf(width), options.valueOf(height), options.valueOf(isFullScreen));
         testWindow.init();
+        gameLoop = new NuevGameLoop(testWindow);
     	modLoader = new LocalModLoader(client.gameDirectory.getModStorage());
     	modLoader.loadMods();
-    	client.gameLoop();
+    	gameLoop.gameLoop();
     	testWindow.close();
     }
-	
-	private void gameLoop() {
-		double secsPerUpdate = 1000000000.0d / 30.0d;
-		long previous = System.nanoTime();
-		long steps = 0;
-		while (!testWindow.windowShouldClose()) {
-			long loopStartTime = System.nanoTime();
-			long elapsed = loopStartTime - previous;
-			previous = loopStartTime;
-			steps += elapsed;
 
-			// handleInput();
-
-			while (steps >= secsPerUpdate) {
-				// updateGameState();
-				steps -= secsPerUpdate;
-			}
-			testWindow.loop();
-			sync(loopStartTime);
-		}
-	}
-	private void sync(long loopStartTime) {
-		   float loopSlot = 1f / 50;
-		   double endTime = loopStartTime + loopSlot; 
-		   while(System.nanoTime() < endTime) {
-		       try {
-		           Thread.sleep(1);
-		       } catch (InterruptedException ie) {}
-		   }
-		}
 }
