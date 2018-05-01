@@ -9,7 +9,7 @@ public class ShaderLoader {
 		try(InputStream in = Class.forName(ShaderLoader.class.getName()).getResourceAsStream("/main/resources/shaders/" + shaderName);
 				Scanner scanner = new Scanner(in, "UTF-8")) {
 			result = scanner.useDelimiter("\\A").next();
-			System.out.println("Loaded " + shaderName);
+			//System.out.println("Loaded " + shaderName);
 		}
 		return result;
 	}

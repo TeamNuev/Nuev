@@ -11,7 +11,7 @@ public class NuevShader {
 	public NuevShader() throws Exception {
 		programId = GL20.glCreateProgram();
 		if(programId == 0) {
-			throw new Exception("Program fail");
+			throw new Exception("Program failed");
 		}
 	}
 	
@@ -26,16 +26,22 @@ public class NuevShader {
 	protected int createShader(String shaderCode, int shaderType) throws Exception {
 		int shaderId = GL20.glCreateShader(shaderType);
 		if(shaderId == 0) {
-			throw new Exception("Shader creating fail");
+			throw new Exception("Shader creating failed");
 		}
 		GL20.glShaderSource(shaderId, shaderCode);
 		GL20.glCompileShader(shaderId);
+		if(GL20.glGetShaderi(shaderId, GL20.GL_COMPILE_STATUS) == 0) {
+			throw new Exception("Shader compiling failed");
+		}
 		GL20.glAttachShader(programId, shaderId);
 		return shaderId;
 	}
 	
-	public void linkShader() {
+	public void linkShader() throws Exception {
 		GL20.glLinkProgram(programId);
+		if(GL20.glGetProgrami(programId, GL20.GL_LINK_STATUS) == 0) {
+			throw new Exception("Shader linking failed");
+		}
 		if(vertexShaderId != 0) {
 			GL20.glDetachShader(programId, vertexShaderId);
 		}

@@ -1,13 +1,37 @@
 package ga.nullcraft.client;
 
-public class NuevGameLoop {
+public class NuevGameLoop implements Runnable {
 	
-	private NullcraftClient game;
-	private NuevWindow window;
+	private final NullcraftClient game;
+	private final NuevWindow window;
+	private final Thread gameLoopThread;
 	
 	public NuevGameLoop(NullcraftClient game) {
+		gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
 		this.game = game;
 		this.window = game.getWindow();
+	}
+	
+	public void start() {
+		String osName = System.getProperty("os.name");
+		if(osName.contains("mac")) {
+			gameLoopThread.run();
+		}
+		else {
+			gameLoopThread.start();
+		}
+	}
+	
+	@Override
+	public void run() {
+		try {
+			init();
+			gameLoop();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			cleanup();
+		}
 	}
 	
 	protected void init() throws Exception {
@@ -57,5 +81,9 @@ public class NuevGameLoop {
 	
 	protected void render() {
 		game.render();
+	}
+	
+	protected void cleanup() {
+		game.cleanup();
 	}
 }

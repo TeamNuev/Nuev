@@ -82,5 +82,12 @@ public class NuevRenderer {
 		if(shader != null) {
 			shader.cleanup();
 		}
+	    GL20.glDisableVertexAttribArray(0);
+
+	    GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+	    GL15.glDeleteBuffers(vboId);
+
+	    GL30.glBindVertexArray(0);
+	    GL30.glDeleteVertexArrays(vaoId);
 	}
 }

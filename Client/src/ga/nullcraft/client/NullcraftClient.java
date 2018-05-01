@@ -36,7 +36,7 @@ public class NullcraftClient {
     private NuevWindow testWindow;
     private NuevGameLoop gameLoop;
     
-    //private NuevRenderer renderer;
+    private NuevRenderer renderer;
     private PlayerCamera camera;
     
     private float dx;
@@ -86,13 +86,14 @@ public class NullcraftClient {
     	gameLoop = new NuevGameLoop(client);
     	modLoader = new LocalModLoader(client.gameDirectory.getModStorage());
     	modLoader.loadMods();
+    	renderer = new NuevRenderer();
     	camera = new PlayerCamera(player);
-    	gameLoop.gameLoop();
+    	gameLoop.run();
     	testWindow.close();
     }
 	
 	public void init() throws Exception {
-		//renderer.init();
+		renderer.init();
 	}
 	
 	public void input() {
@@ -132,7 +133,10 @@ public class NullcraftClient {
             testWindow.setResized(false);
         }
         testWindow.clear();
-        //renderer.render();
+        renderer.render(testWindow);
 	}
 
+	public void cleanup() {
+		renderer.cleanup();
+	}
 }
