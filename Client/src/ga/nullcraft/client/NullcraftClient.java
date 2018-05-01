@@ -7,11 +7,16 @@ import java.util.List;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
+import com.sun.scenario.effect.impl.Renderer;
+
 import ga.nullcraft.client.audio.AudioManager;
+import ga.nullcraft.client.graphics.NuevRenderer;
+import ga.nullcraft.client.graphics.PlayerCamera;
 import ga.nullcraft.client.local.LocalGameDirectory;
 import ga.nullcraft.client.model.ModelManager;
 import ga.nullcraft.client.storage.TempStorage;
 import ga.nullcraft.client.window.WindowManager;
+import ga.nullcraft.global.game.entity.EntityPlayer;
 import ga.nullcraft.global.mod.LocalModLoader;
 import joptsimple.ArgumentAcceptingOptionSpec;
 import joptsimple.NonOptionArgumentSpec;
@@ -20,7 +25,7 @@ import joptsimple.OptionSet;
 
 public class NullcraftClient {
     private LocalGameDirectory gameDirectory;
-    private static LocalModLoader modLoader;
+    private LocalModLoader modLoader;
 
     private WindowManager windowManager;
     private ModelManager modelManager;
@@ -28,8 +33,15 @@ public class NullcraftClient {
 
     private TempStorage tempStorage;
     
-    private static NuevWindow testWindow;
-    private static NuevGameLoop gameLoop;
+    private NuevWindow testWindow;
+    private NuevGameLoop gameLoop;
+    
+    //private NuevRenderer renderer;
+    private PlayerCamera camera;
+    
+    private float dx;
+    private float dy;
+    private float dz;
 
     public NullcraftClient(Path dataDir){
         this.gameDirectory = new LocalGameDirectory(dataDir);
@@ -38,6 +50,10 @@ public class NullcraftClient {
     
     public NuevWindow getWindow() {
     	return testWindow;
+    }
+    
+    public LocalModLoader getModLoader() {
+    	return modLoader;
     }
 
     public LocalGameDirectory getGameDirectory() {
@@ -60,48 +76,54 @@ public class NullcraftClient {
         return tempStorage;
     }
 
-	public static void main(String[] args) throws Exception {
-		Path defaultPath = Paths.get(System.getProperty("user.home"), "Nuev");
-		
-		//Parsing arguments
-    	OptionParser parser = new OptionParser();
-    	parser.allowsUnrecognizedOptions();
-    	parser.accepts("width");
-    	parser.accepts("height");
-    	parser.accepts("fullscreen");
-    	parser.accepts("userToken");
-    	parser.accepts("gameDir");
-
-    	ArgumentAcceptingOptionSpec<Integer> width = parser.accepts("width").withOptionalArg().ofType(Integer.class).defaultsTo(-1);
-    	ArgumentAcceptingOptionSpec<Integer> height = parser.accepts("height").withOptionalArg().ofType(Integer.class).defaultsTo(-1);
-    	ArgumentAcceptingOptionSpec<Boolean> isFullScreen = parser.accepts("fullscreen").withOptionalArg().ofType(Boolean.class).defaultsTo(false);
-    	ArgumentAcceptingOptionSpec<String> userToken = parser.accepts("userToken").withOptionalArg().ofType(String.class);
-    	ArgumentAcceptingOptionSpec<String> gameDir = parser.accepts("gameDir").withOptionalArg().ofType(String.class).defaultsTo(defaultPath.toString());
-    	NonOptionArgumentSpec<String> nonOptions = parser.nonOptions();
-
-    	OptionSet options = parser.parse(args);
-    	List<String> nonOptionList = options.valuesOf(nonOptions);
-
-    	NullcraftClient client = new NullcraftClient(Paths.get(options.valueOf(gameDir)));
-
-    	testWindow = new NuevWindow(options.valueOf(width), options.valueOf(height), options.valueOf(isFullScreen));
-        testWindow.init();
-        gameLoop = new NuevGameLoop(client);
+	public void start() throws Exception {
+		LaunchManager launchManager = new LaunchManager();
+    	NullcraftClient client = launchManager.getClient();
+    	EntityPlayer player = new EntityPlayer(0, 0, 0);
+    	
+		testWindow = launchManager.getWindow();
+		testWindow.init();
+    	gameLoop = new NuevGameLoop(client);
     	modLoader = new LocalModLoader(client.gameDirectory.getModStorage());
     	modLoader.loadMods();
+    	camera = new PlayerCamera(player);
     	gameLoop.gameLoop();
     	testWindow.close();
     }
 	
-	public void input() {
-		
+	public void init() throws Exception {
+		//renderer.init();
 	}
 	
-	public void update() {
+	public void input() {
+		dx = 0;
+		dy = 0;
+		dz = 0;
 		if (testWindow.isKeyPressed(GLFW.GLFW_KEY_F11)) {
 			testWindow.setScreenMode(!testWindow.isFullScreen());
 		}
-
+		if (testWindow.isKeyPressed(GLFW.GLFW_KEY_W)) {
+			dz = -1;
+		}
+		else if (testWindow.isKeyPressed(GLFW.GLFW_KEY_S)) {
+			dz = 1;
+		}
+		if (testWindow.isKeyPressed(GLFW.GLFW_KEY_A)) {
+			dx = -1;
+		}
+		else if (testWindow.isKeyPressed(GLFW.GLFW_KEY_D)) {
+			dx = 1;
+		}
+		if (testWindow.isKeyPressed(GLFW.GLFW_KEY_LEFT_SHIFT)) {
+			dy = -1;
+		}
+		else if (testWindow.isKeyPressed(GLFW.GLFW_KEY_SPACE)) {
+			dy = 1;
+		}
+	}
+	
+	public void update() {
+		camera.movePosition(dx * 0.05f, dy * 0.05f, dz * 0.05f);
 	}
 	
 	public void render() {
@@ -110,6 +132,7 @@ public class NullcraftClient {
             testWindow.setResized(false);
         }
         testWindow.clear();
+        //renderer.render();
 	}
 
 }

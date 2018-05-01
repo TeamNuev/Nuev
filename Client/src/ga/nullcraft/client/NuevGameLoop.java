@@ -10,6 +10,10 @@ public class NuevGameLoop {
 		this.window = game.getWindow();
 	}
 	
+	protected void init() throws Exception {
+		game.init();
+	}
+	
 	protected void gameLoop() {
 		double secsPerUpdate = 1000000000.0d / 30.0d;
 		long previous = System.nanoTime();

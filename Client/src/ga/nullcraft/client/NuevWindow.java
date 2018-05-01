@@ -180,4 +180,8 @@ public class NuevWindow {
 	public void clear() {
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 	}
+	
+	public void setClearColor(float r, float g, float b, float alpha) {
+		GL11.glClearColor(r, g, b, alpha);
+	}
 }
