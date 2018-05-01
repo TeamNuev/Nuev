@@ -93,7 +93,7 @@ public class NullcraftClient {
     }
 	
 	public void init() throws Exception {
-		renderer.init();
+		renderer.init(testWindow);
 	}
 	
 	public void input() {

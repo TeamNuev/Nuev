@@ -2,6 +2,7 @@ package ga.nullcraft.client.graphics;
 
 import java.nio.FloatBuffer;
 
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
@@ -13,6 +14,10 @@ import ga.nullcraft.client.resource.ShaderLoader;
 
 public class NuevRenderer {
 	
+    private static final float FOV = (float) Math.toRadians(60.0f);
+    private static final float Z_NEAR = 0.01f;
+    private static final float Z_FAR = 1000.f;
+    private Matrix4f projectionMatrix;
 	private NuevShader shader;
 	private int vaoId;
 	private int vboId;
@@ -21,12 +26,16 @@ public class NuevRenderer {
 		
 	}
 	
-	public void init() throws Exception {
+	public void init(NuevWindow window) throws Exception {
 		shader = new NuevShader();
 		ShaderLoader loader = new ShaderLoader();
 		shader.createVertexShader(loader.loadShader("vertex.vs"));
 		shader.createFragmentShader(loader.loadShader("fragment.fs"));
 		shader.linkShader();
+		
+		float aspectRatio = (float) window.getWidth() / (float) window.getHeight();
+		projectionMatrix = new Matrix4f().perspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
+		shader.createUniform("projectionMatrix");
 		
         float[] vertices = new float[]{
                 0.0f, 0.5f, 0.0f,
@@ -66,6 +75,7 @@ public class NuevRenderer {
         }
         
 		shader.bind();
+		shader.setUniform("projectionMatrix", projectionMatrix);
 		
 		GL30.glBindVertexArray(vaoId);
 		GL20.glEnableVertexAttribArray(0);

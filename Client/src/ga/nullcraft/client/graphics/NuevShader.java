@@ -1,18 +1,27 @@
 package ga.nullcraft.client.graphics;
 
+import java.nio.FloatBuffer;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.system.MemoryStack;
+
 
 public class NuevShader {
 	
 	private final int programId;
 	private int vertexShaderId;
 	private int fragmentShaderId;
+	private final Map<String, Integer> uniforms;
 	
 	public NuevShader() throws Exception {
 		programId = GL20.glCreateProgram();
 		if(programId == 0) {
 			throw new Exception("Program failed");
 		}
+		uniforms = new HashMap<>();
 	}
 	
 	public void createVertexShader(String shaderCode) throws Exception {
@@ -47,6 +56,22 @@ public class NuevShader {
 		}
 		if(fragmentShaderId != 0) {
 			GL20.glDetachShader(programId, fragmentShaderId);
+		}
+	}
+	
+	public void createUniform(String uniformName) throws Exception {
+		int uniformLocation = GL20.glGetUniformLocation(programId, uniformName);
+		if(uniformLocation < 0) {
+			throw new Exception("Uniform finding failed");
+		}
+		uniforms.put(uniformName, uniformLocation);
+	}
+	
+	public void setUniform(String uniformName, Matrix4f value) {
+		try(MemoryStack stack = MemoryStack.stackPush()) {
+			FloatBuffer fb = stack.mallocFloat(16);
+			value.get(fb);
+			GL20.glUniformMatrix4fv(uniforms.get(uniformName), false, fb);
 		}
 	}
 	
