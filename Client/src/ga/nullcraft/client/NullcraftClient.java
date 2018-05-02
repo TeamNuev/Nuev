@@ -1,25 +1,29 @@
 package ga.nullcraft.client;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
+
+import org.joml.Vector2f;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
 
 import ga.nullcraft.client.audio.AudioManager;
+import ga.nullcraft.client.graphics.Mesh;
+import ga.nullcraft.client.graphics.MouseInput;
+import ga.nullcraft.client.graphics.NuevMeshItem;
+import ga.nullcraft.client.graphics.NuevRenderer;
+import ga.nullcraft.client.graphics.PlayerCamera;
 import ga.nullcraft.client.local.LocalGameDirectory;
 import ga.nullcraft.client.model.ModelManager;
 import ga.nullcraft.client.storage.TempStorage;
 import ga.nullcraft.client.window.WindowManager;
+import ga.nullcraft.global.game.entity.EntityPlayer;
 import ga.nullcraft.global.mod.loader.LocalFullModLoader;
 import ga.nullcraft.global.mod.loader.LocalHalfModLoader;
-import joptsimple.ArgumentAcceptingOptionSpec;
-import joptsimple.NonOptionArgumentSpec;
-import joptsimple.OptionParser;
-import joptsimple.OptionSet;
 
 public class NullcraftClient {
     private LocalGameDirectory gameDirectory;
-    private static LocalFullModLoader fullModLoader;
-    private static LocalHalfModLoader halfModLoader;
+    private LocalFullModLoader fullModLoader;
+    private LocalHalfModLoader halfModLoader;
 
     private WindowManager windowManager;
     private ModelManager modelManager;
@@ -27,11 +31,132 @@ public class NullcraftClient {
 
     private TempStorage tempStorage;
     
-    private static NuevWindow testWindow;
+    private NuevWindow testWindow;
+    private NuevGameLoop gameLoop;
+    
+    private NuevRenderer renderer;
+    private PlayerCamera camera;
+    
+    private float dx;
+    private float dy;
+    private float dz;
+    private float MOUSE_SENSITIVITY = 0.2f;
+	private NuevMeshItem[] meshItems;
 
     public NullcraftClient(Path dataDir){
         this.gameDirectory = new LocalGameDirectory(dataDir);
         this.tempStorage = new TempStorage();
+    }
+    
+    public void start() throws Exception {
+		LaunchManager launchManager = new LaunchManager();
+    	NullcraftClient client = launchManager.getClient();
+    	EntityPlayer player = new EntityPlayer(0, 0, 0);
+    	
+		testWindow = launchManager.getWindow();
+		testWindow.init();
+    	gameLoop = new NuevGameLoop(client);
+    	fullModLoader = new LocalFullModLoader(client.gameDirectory.getFullModStorage());
+    	fullModLoader.loadMods();
+    	halfModLoader = new LocalHalfModLoader(client.gameDirectory.getHalfModStorage());
+    	halfModLoader.loadMods();
+    	renderer = new NuevRenderer();
+    	camera = new PlayerCamera(player);
+    	gameLoop.run();
+    	testWindow.close();
+    }
+	
+	public void init() throws Exception {
+		renderer.init(testWindow);
+		
+        float[] positions = new float[]{
+            -0.5f,  0.5f, -1.0f,
+            -0.5f, -0.5f, -1.0f,
+             0.5f, -0.5f, -1.0f,
+             0.5f,  0.5f, -1.0f,
+        };
+        float[] colours = new float[]{
+            0.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f,
+        };
+        int[] indices = new int[]{
+            0, 1, 3, 3, 1, 2,
+        };
+        Mesh mesh = new Mesh(positions, colours, indices);
+        NuevMeshItem item = new NuevMeshItem(mesh);
+        item.setPosition(0.0f, 0.0f, 0.0f);
+        meshItems = new NuevMeshItem[] { item };
+	}
+	
+	public void input(MouseInput mouseInput) {
+		dx = 0;
+		dy = 0;
+		dz = 0;
+		if (testWindow.isKeyPressed(GLFW.GLFW_KEY_F11)) {
+			testWindow.setScreenMode(!testWindow.isFullScreen());
+		}
+		if (testWindow.isKeyPressed(GLFW.GLFW_KEY_W)) {
+			dz = -1;
+		}
+		else if (testWindow.isKeyPressed(GLFW.GLFW_KEY_S)) {
+			dz = 1;
+		}
+		if (testWindow.isKeyPressed(GLFW.GLFW_KEY_A)) {
+			dx = -1;
+		}
+		else if (testWindow.isKeyPressed(GLFW.GLFW_KEY_D)) {
+			dx = 1;
+		}
+		if (testWindow.isKeyPressed(GLFW.GLFW_KEY_LEFT_SHIFT)) {
+			dy = -1;
+		}
+		else if (testWindow.isKeyPressed(GLFW.GLFW_KEY_SPACE)) {
+			dy = 1;
+		}
+		if (testWindow.isKeyPressed(GLFW.GLFW_KEY_UP)) {
+			MOUSE_SENSITIVITY += 0.02f;
+		}
+		else if (testWindow.isKeyPressed(GLFW.GLFW_KEY_DOWN)) {
+			MOUSE_SENSITIVITY -= 0.02f;
+		}
+	}
+	
+	public void update(MouseInput mouseInput) {
+		camera.movePosition(dx * 0.05f, dy * 0.05f, dz * 0.05f);
+		
+		Vector2f rotVec = mouseInput.getDisplVec();
+		GLFW.glfwSetCursorPos(testWindow.getWindowHandle(), testWindow.getWidth()/2, testWindow.getHeight()/2);
+		camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
+	}
+	
+	public void render() {
+        if (testWindow.isResized()) {
+            GL11.glViewport(0, 0, testWindow.getWidth(), testWindow.getHeight());
+            testWindow.setResized(false);
+        }
+        testWindow.clear();
+        renderer.render(testWindow, camera, meshItems);
+	}
+
+	public void cleanup() {
+		renderer.cleanup();
+		for(NuevMeshItem item : meshItems) {
+			item.getMesh().cleanup();
+		}
+	}
+	 
+    public NuevWindow getWindow() {
+    	return testWindow;
+    }
+    
+    public LocalFullModLoader getModLoader() {
+    	return fullModLoader;
+    }
+    
+    public LocalHalfModLoader getHalfModLoader() {
+    	return halfModLoader;
     }
 
     public LocalGameDirectory getGameDirectory() {
@@ -54,67 +179,4 @@ public class NullcraftClient {
         return tempStorage;
     }
 
-	public static void main(String[] args){
-		Path defaultPath = Paths.get(System.getProperty("user.home"), "Nuev");
-		
-		//Parsing arguments
-    	OptionParser parser = new OptionParser();
-    	parser.allowsUnrecognizedOptions();
-    	parser.accepts("width");
-    	parser.accepts("height");
-    	parser.accepts("fullscreen");
-    	parser.accepts("userToken");
-    	parser.accepts("gameDir");
-
-    	ArgumentAcceptingOptionSpec<Integer> width = parser.accepts("width").withOptionalArg().ofType(Integer.class).defaultsTo(-1);
-    	ArgumentAcceptingOptionSpec<Integer> height = parser.accepts("height").withOptionalArg().ofType(Integer.class).defaultsTo(-1);
-    	ArgumentAcceptingOptionSpec<Boolean> isFullScreen = parser.accepts("fullscreen").withOptionalArg().ofType(Boolean.class).defaultsTo(false);
-    	ArgumentAcceptingOptionSpec<String> userToken = parser.accepts("userToken").withOptionalArg().ofType(String.class);
-    	ArgumentAcceptingOptionSpec<String> gameDir = parser.accepts("gameDir").withOptionalArg().ofType(String.class).defaultsTo(defaultPath.toString());
-    	NonOptionArgumentSpec<String> nonOptions = parser.nonOptions();
-
-    	OptionSet options = parser.parse(args);
-    	List<String> nonOptionList = options.valuesOf(nonOptions);
-
-    	NullcraftClient client = new NullcraftClient(Paths.get(options.valueOf(gameDir)));
-
-    	testWindow = new NuevWindow(options.valueOf(width), options.valueOf(height), options.valueOf(isFullScreen));
-        testWindow.init();
-        fullModLoader = new LocalFullModLoader(client.gameDirectory.getFullModStorage());
-        fullModLoader.init();
-        halfModLoader = new LocalHalfModLoader(client.gameDirectory.getHalfModStorage());
-        halfModLoader.loadMods();
-    	client.gameLoop();
-    	testWindow.close();
-    }
-	
-	private void gameLoop() {
-		double secsPerUpdate = 1000000000.0d / 30.0d;
-		long previous = System.nanoTime();
-		long steps = 0;
-		while (!testWindow.windowShouldClose()) {
-			long loopStartTime = System.nanoTime();
-			long elapsed = loopStartTime - previous;
-			previous = loopStartTime;
-			steps += elapsed;
-
-			// handleInput();
-
-			while (steps >= secsPerUpdate) {
-				// updateGameState();
-				steps -= secsPerUpdate;
-			}
-			testWindow.loop();
-			sync(loopStartTime);
-		}
-	}
-	private void sync(long loopStartTime) {
-		   float loopSlot = 1f / 50;
-		   double endTime = loopStartTime + loopSlot; 
-		   while(System.nanoTime() < endTime) {
-		       try {
-		           Thread.sleep(1);
-		       } catch (InterruptedException ie) {}
-		   }
-		}
 }

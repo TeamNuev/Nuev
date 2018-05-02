@@ -7,6 +7,9 @@ public class EntityPlayer implements IEntity {
 	private float posX;
 	private float posY;
 	private float posZ;
+	private float rotX;
+	private float rotY;
+	private float rotZ;
 	
 	public EntityPlayer(float spawnX, float spawnY, float spawnZ) {
 		posX = spawnX;
@@ -24,12 +27,21 @@ public class EntityPlayer implements IEntity {
 		posX = x;
 		posY = y;
 		posZ = z;
+		rotX = 0;
+		rotY = 0;
+		rotZ = 0;
 	}
 	
 	public void movePosition(float offsetX, float offsetY, float offsetZ) {
-		posX += offsetX;
-		posY += offsetY;
-		posZ += offsetZ;
+        if ( offsetZ != 0 ) {
+            posX += (float)Math.sin(Math.toRadians(rotY)) * -1.0f * offsetZ;
+            posZ += (float)Math.cos(Math.toRadians(rotY)) * offsetZ;
+        }
+        if ( offsetX != 0) {
+            posX += (float)Math.sin(Math.toRadians(rotY - 90)) * -1.0f * offsetX;
+            posZ += (float)Math.cos(Math.toRadians(rotY - 90)) * offsetX;
+        }
+        posY += offsetY;
 	}
 	
 	public float getX() {
@@ -42,5 +54,29 @@ public class EntityPlayer implements IEntity {
 	
 	public float getZ() {
 		return posZ;
+	}
+	
+	public void setRotation(float x, float y, float z) {
+		rotX = x;
+		rotY = y;
+		rotZ = z;
+	}
+	
+	public void moveRotation(float offsetX, float offsetY, float offsetZ) {
+		rotX += offsetX;
+		rotY += offsetY;
+		rotZ += offsetZ;
+	}
+	
+	public float getRotX() {
+		return rotX;
+	}
+	
+	public float getRotY() {
+		return rotY;
+	}
+	
+	public float getRotZ() {
+		return rotZ;
 	}
 }

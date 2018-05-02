@@ -1,15 +1,19 @@
 package ga.nullcraft.client;
 
+import ga.nullcraft.client.graphics.MouseInput;
+
 public class NuevGameLoop implements Runnable {
 	
 	private final NullcraftClient game;
 	private final NuevWindow window;
 	private final Thread gameLoopThread;
+	private final MouseInput mouseInput;
 	
 	public NuevGameLoop(NullcraftClient game) {
 		gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
 		this.game = game;
 		this.window = game.getWindow();
+		mouseInput = new MouseInput();
 	}
 	
 	public void start() {
@@ -35,6 +39,7 @@ public class NuevGameLoop implements Runnable {
 	}
 	
 	protected void init() throws Exception {
+		mouseInput.init(window);
 		game.init();
 	}
 	
@@ -72,11 +77,12 @@ public class NuevGameLoop implements Runnable {
 	}
 	
 	protected void handleInput() {
-		game.input();
+		mouseInput.input(window);
+		game.input(mouseInput);
 	}
 	
 	protected void updateGameState() {
-		game.update();
+		game.update(mouseInput);
 	}
 	
 	protected void render() {

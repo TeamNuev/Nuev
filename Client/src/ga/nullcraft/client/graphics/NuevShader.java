@@ -24,6 +24,22 @@ public class NuevShader {
 		uniforms = new HashMap<>();
 	}
 	
+	public void createUniform(String uniformName) throws Exception {
+		int uniformLocation = GL20.glGetUniformLocation(programId, uniformName);
+		if(uniformLocation < 0) {
+			throw new Exception("Uniform finding failed");
+		}
+		uniforms.put(uniformName, uniformLocation);
+	}
+	
+	public void setUniform(String uniformName, Matrix4f value) {
+		try(MemoryStack stack = MemoryStack.stackPush()) {
+			FloatBuffer fb = stack.mallocFloat(16);
+			value.get(fb);
+			GL20.glUniformMatrix4fv(uniforms.get(uniformName), false, fb);
+		}
+	}
+	
 	public void createVertexShader(String shaderCode) throws Exception {
 		vertexShaderId = createShader(shaderCode, GL20.GL_VERTEX_SHADER);
 	}
@@ -56,22 +72,6 @@ public class NuevShader {
 		}
 		if(fragmentShaderId != 0) {
 			GL20.glDetachShader(programId, fragmentShaderId);
-		}
-	}
-	
-	public void createUniform(String uniformName) throws Exception {
-		int uniformLocation = GL20.glGetUniformLocation(programId, uniformName);
-		if(uniformLocation < 0) {
-			throw new Exception("Uniform finding failed");
-		}
-		uniforms.put(uniformName, uniformLocation);
-	}
-	
-	public void setUniform(String uniformName, Matrix4f value) {
-		try(MemoryStack stack = MemoryStack.stackPush()) {
-			FloatBuffer fb = stack.mallocFloat(16);
-			value.get(fb);
-			GL20.glUniformMatrix4fv(uniforms.get(uniformName), false, fb);
 		}
 	}
 	

@@ -29,6 +29,7 @@ public class NuevWindow {
 	private int HEIGHT;
 	private boolean FULL_SCREEN;
 	private boolean isResized;
+	private boolean mouseLocked = true;
 
 	NuevWindow(int width, int height, boolean isFullScreen) {
 		this.WIDTH = (width > 0) ? width : DEFAULT_WIDTH;
@@ -94,7 +95,10 @@ public class NuevWindow {
 			GLFW.glfwSetWindowPos(window, (vidmode.width() - pWidth.get(0)) / 2,
 					(vidmode.height() - pHeight.get(0)) / 2);
 		} // the stack frame is popped automatically
-
+		
+		if(mouseLocked == true) {
+			GLFW.glfwSetInputMode(window, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_HIDDEN);
+		}
 		// Make the OpenGL context current
 		GLFW.glfwMakeContextCurrent(window);
 		// Enable v-sync

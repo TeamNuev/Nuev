@@ -1,13 +1,7 @@
 package ga.nullcraft.client.graphics;
 
-import java.nio.FloatBuffer;
-
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.system.MemoryUtil;
 
 import ga.nullcraft.client.NuevWindow;
 import ga.nullcraft.client.resource.ShaderLoader;
@@ -17,13 +11,11 @@ public class NuevRenderer {
     private static final float FOV = (float) Math.toRadians(60.0f);
     private static final float Z_NEAR = 0.01f;
     private static final float Z_FAR = 1000.f;
-    private Matrix4f projectionMatrix;
 	private NuevShader shader;
-	private int vaoId;
-	private int vboId;
+	private Transformation transformation;
 	
 	public NuevRenderer() {
-		
+		transformation = new Transformation();
 	}
 	
 	public void init(NuevWindow window) throws Exception {
@@ -33,41 +25,11 @@ public class NuevRenderer {
 		shader.createFragmentShader(loader.loadShader("fragment.fs"));
 		shader.linkShader();
 		
-		float aspectRatio = (float) window.getWidth() / (float) window.getHeight();
-		projectionMatrix = new Matrix4f().perspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
 		shader.createUniform("projectionMatrix");
-		
-        float[] vertices = new float[]{
-                0.0f, 0.5f, 0.0f,
-                -0.5f, -0.5f, 0.0f,
-                0.5f, -0.5f, 0.0f
-        };
-
-        FloatBuffer verticesBuffer = null;
-        
-        try {
-            verticesBuffer = MemoryUtil.memAllocFloat(vertices.length);
-            verticesBuffer.put(vertices).flip();
-
-            vaoId = GL30.glGenVertexArrays();
-            GL30.glBindVertexArray(vaoId);
-
-            vboId = GL15.glGenBuffers();
-            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboId);
-            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, verticesBuffer, GL15.GL_STATIC_DRAW);
-            GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);
-
-            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-            GL30.glBindVertexArray(0);
-        } finally {
-            if (verticesBuffer != null) {
-                 MemoryUtil.memFree(verticesBuffer);
-            }
-        }
-
+		shader.createUniform("modelViewMatrix");
 	}
 	
-	public void render(NuevWindow window) {
+	public void render(NuevWindow window, ICamera camera, NuevMeshItem[] items) {
 		window.clear();
 		if (window.isResized()) {
             GL11.glViewport(0, 0, window.getWidth(), window.getHeight());
@@ -75,15 +37,17 @@ public class NuevRenderer {
         }
         
 		shader.bind();
+		
+		Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
 		shader.setUniform("projectionMatrix", projectionMatrix);
 		
-		GL30.glBindVertexArray(vaoId);
-		GL20.glEnableVertexAttribArray(0);
+		Matrix4f viewMatrix = transformation.getViewMatrix(camera);
 		
-		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3);
-		
-		GL20.glDisableVertexAttribArray(0);
-		GL30.glBindVertexArray(0);
+		for(NuevMeshItem item : items) {
+			Matrix4f modelViewMatrix = transformation.getModelViewMatrix(item, viewMatrix);
+			shader.setUniform("modelViewMatrix", modelViewMatrix);
+			item.getMesh().render();
+		}
 		
 		shader.unbind();
 	}
@@ -92,12 +56,6 @@ public class NuevRenderer {
 		if(shader != null) {
 			shader.cleanup();
 		}
-	    GL20.glDisableVertexAttribArray(0);
-
-	    GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-	    GL15.glDeleteBuffers(vboId);
-
-	    GL30.glBindVertexArray(0);
-	    GL30.glDeleteVertexArrays(vaoId);
+		
 	}
 }
