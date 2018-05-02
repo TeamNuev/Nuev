@@ -6,3 +6,6 @@
 .classpath
 .project
 /bin/
+
+#For VS Code
+*.code-workspace
