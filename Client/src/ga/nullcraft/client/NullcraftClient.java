@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
@@ -11,6 +12,7 @@ import com.sun.scenario.effect.impl.Renderer;
 
 import ga.nullcraft.client.audio.AudioManager;
 import ga.nullcraft.client.graphics.Mesh;
+import ga.nullcraft.client.graphics.MouseInput;
 import ga.nullcraft.client.graphics.NuevMeshItem;
 import ga.nullcraft.client.graphics.NuevRenderer;
 import ga.nullcraft.client.graphics.PlayerCamera;
@@ -44,6 +46,7 @@ public class NullcraftClient {
     private float dx;
     private float dy;
     private float dz;
+    private float MOUSE_SENSITIVITY = 0.2f;
 	private NuevMeshItem[] meshItems;
 
     public NullcraftClient(Path dataDir){
@@ -91,7 +94,7 @@ public class NullcraftClient {
         meshItems = new NuevMeshItem[] { item };
 	}
 	
-	public void input() {
+	public void input(MouseInput mouseInput) {
 		dx = 0;
 		dy = 0;
 		dz = 0;
@@ -116,10 +119,20 @@ public class NullcraftClient {
 		else if (testWindow.isKeyPressed(GLFW.GLFW_KEY_SPACE)) {
 			dy = 1;
 		}
+		if (testWindow.isKeyPressed(GLFW.GLFW_KEY_UP)) {
+			MOUSE_SENSITIVITY += 0.02f;
+		}
+		else if (testWindow.isKeyPressed(GLFW.GLFW_KEY_DOWN)) {
+			MOUSE_SENSITIVITY -= 0.02f;
+		}
 	}
 	
-	public void update() {
+	public void update(MouseInput mouseInput) {
 		camera.movePosition(dx * 0.05f, dy * 0.05f, dz * 0.05f);
+		
+		Vector2f rotVec = mouseInput.getDisplVec();
+		System.out.println(rotVec.x + " " + rotVec.y);
+		camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
 	}
 	
 	public void render() {
