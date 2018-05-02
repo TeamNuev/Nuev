@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL11;
 import com.sun.scenario.effect.impl.Renderer;
 
 import ga.nullcraft.client.audio.AudioManager;
+import ga.nullcraft.client.graphics.Mesh;
 import ga.nullcraft.client.graphics.NuevRenderer;
 import ga.nullcraft.client.graphics.PlayerCamera;
 import ga.nullcraft.client.local.LocalGameDirectory;
@@ -42,6 +43,7 @@ public class NullcraftClient {
     private float dx;
     private float dy;
     private float dz;
+	private Mesh mesh;
 
     public NullcraftClient(Path dataDir){
         this.gameDirectory = new LocalGameDirectory(dataDir);
@@ -94,6 +96,14 @@ public class NullcraftClient {
 	
 	public void init() throws Exception {
 		renderer.init(testWindow);
+		
+        float[] positions = new float[]{
+                0.0f, 0.5f, 0.0f,
+                -0.5f, -0.5f, 0.0f,
+                0.5f, -0.5f, 0.0f
+        };
+        
+        mesh = new Mesh(positions);
 	}
 	
 	public void input() {
@@ -133,7 +143,7 @@ public class NullcraftClient {
             testWindow.setResized(false);
         }
         testWindow.clear();
-        renderer.render(testWindow);
+        renderer.render(testWindow, mesh);
 	}
 
 	public void cleanup() {

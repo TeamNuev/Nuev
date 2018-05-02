@@ -18,9 +18,8 @@ public class NuevRenderer {
     private static final float Z_NEAR = 0.01f;
     private static final float Z_FAR = 1000.f;
     private Matrix4f projectionMatrix;
+    private Matrix4f viewMatrix;
 	private NuevShader shader;
-	private int vaoId;
-	private int vboId;
 	
 	public NuevRenderer() {
 		
@@ -36,38 +35,9 @@ public class NuevRenderer {
 		float aspectRatio = (float) window.getWidth() / (float) window.getHeight();
 		projectionMatrix = new Matrix4f().perspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
 		shader.createUniform("projectionMatrix");
-		
-        float[] vertices = new float[]{
-                0.0f, 0.5f, 0.0f,
-                -0.5f, -0.5f, 0.0f,
-                0.5f, -0.5f, 0.0f
-        };
-
-        FloatBuffer verticesBuffer = null;
-        
-        try {
-            verticesBuffer = MemoryUtil.memAllocFloat(vertices.length);
-            verticesBuffer.put(vertices).flip();
-
-            vaoId = GL30.glGenVertexArrays();
-            GL30.glBindVertexArray(vaoId);
-
-            vboId = GL15.glGenBuffers();
-            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboId);
-            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, verticesBuffer, GL15.GL_STATIC_DRAW);
-            GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);
-
-            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-            GL30.glBindVertexArray(0);
-        } finally {
-            if (verticesBuffer != null) {
-                 MemoryUtil.memFree(verticesBuffer);
-            }
-        }
-
 	}
 	
-	public void render(NuevWindow window) {
+	public void render(NuevWindow window, Mesh mesh) {
 		window.clear();
 		if (window.isResized()) {
             GL11.glViewport(0, 0, window.getWidth(), window.getHeight());
@@ -77,10 +47,10 @@ public class NuevRenderer {
 		shader.bind();
 		shader.setUniform("projectionMatrix", projectionMatrix);
 		
-		GL30.glBindVertexArray(vaoId);
+		GL30.glBindVertexArray(mesh.getVaoId());
 		GL20.glEnableVertexAttribArray(0);
 		
-		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3);
+		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, mesh.getVertexCount());
 		
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
@@ -92,12 +62,6 @@ public class NuevRenderer {
 		if(shader != null) {
 			shader.cleanup();
 		}
-	    GL20.glDisableVertexAttribArray(0);
-
-	    GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-	    GL15.glDeleteBuffers(vboId);
-
-	    GL30.glBindVertexArray(0);
-	    GL30.glDeleteVertexArrays(vaoId);
+		
 	}
 }
