@@ -25,9 +25,10 @@ public class NuevWindow {
 	
 	// The window handle
 	private long window;
-	private final int WIDTH;
-	private final int HEIGHT;
+	private int WIDTH;
+	private int HEIGHT;
 	private boolean FULL_SCREEN;
+	private boolean isResized;
 
 	NuevWindow(int width, int height, boolean isFullScreen) {
 		this.WIDTH = (width > 0) ? width : DEFAULT_WIDTH;
@@ -64,6 +65,12 @@ public class NuevWindow {
 		}
 		if (window == MemoryUtil.NULL)
 			throw new RuntimeException("Failed to create the GLFW window");
+		
+		GLFW.glfwSetFramebufferSizeCallback(window, (window, width, height) -> {
+			this.WIDTH = width;
+			this.HEIGHT = height;
+			this.setResized(true);
+		});
 		
 		// Setup a key callback. It will be called every time a key is pressed, repeated
 		// or released.
@@ -137,13 +144,7 @@ public class NuevWindow {
 	void loop() {
 		// Run the rendering loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key.
-		// fk temp
-		if (isKeyPressed(GLFW.GLFW_KEY_F11)) {
-			setScreenMode(!FULL_SCREEN);
-		}
-
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT); // clear the framebuffer
-
+		
 		GLFW.glfwSwapBuffers(window); // swap the color buffers
 
 		// Poll for window events. The key callback above will only be
@@ -192,10 +193,26 @@ public class NuevWindow {
 	public boolean isFullScreen() {
 		return FULL_SCREEN;
 	}
-	
+
 	public void setScreenMode(boolean isFullScreen) {
 		FULL_SCREEN = isFullScreen;
 		GLFW.glfwDestroyWindow(window);
 		init();
+	}
+	
+	public boolean isResized() {
+		return isResized;
+	}
+	
+	public void setResized(boolean isResized) {
+		this.isResized = isResized;
+	}
+	
+	public void clear() {
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+	}
+	
+	public void setClearColor(float r, float g, float b, float alpha) {
+		GL11.glClearColor(r, g, b, alpha);
 	}
 }
