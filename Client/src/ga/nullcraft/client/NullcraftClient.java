@@ -8,6 +8,7 @@ import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
+import com.sun.glass.ui.Window;
 import com.sun.scenario.effect.impl.Renderer;
 
 import ga.nullcraft.client.audio.AudioManager;
@@ -131,7 +132,7 @@ public class NullcraftClient {
 		camera.movePosition(dx * 0.05f, dy * 0.05f, dz * 0.05f);
 		
 		Vector2f rotVec = mouseInput.getDisplVec();
-		System.out.println(rotVec.x + " " + rotVec.y);
+		GLFW.glfwSetCursorPos(testWindow.getWindowHandle(), testWindow.getWidth()/2, testWindow.getHeight()/2);
 		camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
 	}
 	
