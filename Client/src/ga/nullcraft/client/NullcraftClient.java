@@ -9,7 +9,8 @@ import ga.nullcraft.client.local.LocalGameDirectory;
 import ga.nullcraft.client.model.ModelManager;
 import ga.nullcraft.client.storage.TempStorage;
 import ga.nullcraft.client.window.WindowManager;
-import ga.nullcraft.global.mod.LocalModLoader;
+import ga.nullcraft.global.mod.loader.LocalFullModLoader;
+import ga.nullcraft.global.mod.loader.LocalHalfModLoader;
 import joptsimple.ArgumentAcceptingOptionSpec;
 import joptsimple.NonOptionArgumentSpec;
 import joptsimple.OptionParser;
@@ -17,7 +18,8 @@ import joptsimple.OptionSet;
 
 public class NullcraftClient {
     private LocalGameDirectory gameDirectory;
-    private static LocalModLoader modLoader;
+    private static LocalFullModLoader fullModLoader;
+    private static LocalHalfModLoader halfModLoader;
 
     private WindowManager windowManager;
     private ModelManager modelManager;
@@ -78,8 +80,10 @@ public class NullcraftClient {
 
     	testWindow = new NuevWindow(options.valueOf(width), options.valueOf(height), options.valueOf(isFullScreen));
         testWindow.init();
-    	modLoader = new LocalModLoader(client.gameDirectory.getModStorage());
-    	modLoader.loadMods();
+        fullModLoader = new LocalFullModLoader(client.gameDirectory.getFullModStorage());
+        fullModLoader.init();
+        halfModLoader = new LocalHalfModLoader(client.gameDirectory.getHalfModStorage());
+        halfModLoader.loadMods();
     	client.gameLoop();
     	testWindow.close();
     }

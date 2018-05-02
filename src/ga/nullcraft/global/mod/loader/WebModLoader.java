@@ -1,4 +1,6 @@
-package ga.nullcraft.global.mod;
+package ga.nullcraft.global.mod.loader;
+
+import ga.nullcraft.global.mod.WebMod;
 
 /**
  * Loads mods.
@@ -6,7 +8,7 @@ package ga.nullcraft.global.mod;
  * @author TNuev
  *
  */
-public class WebModLoader implements IModLoader {
+public class WebModLoader implements IWebModLoader {
 
 	WebMod[] modList;
 	

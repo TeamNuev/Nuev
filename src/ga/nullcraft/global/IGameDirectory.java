@@ -11,5 +11,9 @@ public interface IGameDirectory {
     WorldStorage getWorldStorage();
 
     ModStorage getModStorage();
+    
+    ModStorage getFullModStorage();
+    
+    ModStorage getHalfModStorage();
 }
 

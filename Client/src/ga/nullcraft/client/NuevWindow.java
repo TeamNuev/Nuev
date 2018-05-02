@@ -2,11 +2,16 @@ package ga.nullcraft.client;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
@@ -87,6 +92,32 @@ public class NuevWindow {
 		GLFW.glfwMakeContextCurrent(window);
 		// Enable v-sync
 		GLFW.glfwSwapInterval(1);
+		
+		// Set icon
+		/*try {
+			InputStream is = getClass().getClassLoader().getResourceAsStream("icon.png");
+			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+			int nRead;
+			byte[] data = new byte[16384];
+
+			while ((nRead = is.read(data, 0, data.length)) != -1) {
+			  buffer.write(data, 0, nRead);
+			}
+
+			buffer.flush();
+			
+			GLFWImage image = GLFWImage.malloc();
+			image.set(767, 768, ByteBuffer.wrap(buffer.toByteArray()));
+			GLFWImage.Buffer images = GLFWImage.malloc(1);
+			images.put(0, image);
+			
+			GLFW.glfwSetWindowIcon(window, images);
+			
+			images.free();
+			image.free();
+		} catch (IOException e) {
+		}*/
 
 		// Make the window visible
 		GLFW.glfwShowWindow(window);

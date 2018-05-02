@@ -1,4 +1,4 @@
-package ga.nullcraft.global.mod;
+package ga.nullcraft.global.mod.loader;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,11 +14,11 @@ import ga.nullcraft.global.storage.ModStorage;
  * @author TNuev
  *
  */
-public class LocalModLoader implements IModLoader {
+public class LocalHalfModLoader implements ILocalModLoader {
 
 	ModStorage modStorage;
 	
-	public LocalModLoader(ModStorage modStorage) {
+	public LocalHalfModLoader(ModStorage modStorage) {
 		this.modStorage = modStorage;
 	}
 
