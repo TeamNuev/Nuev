@@ -11,6 +11,7 @@ import com.sun.scenario.effect.impl.Renderer;
 
 import ga.nullcraft.client.audio.AudioManager;
 import ga.nullcraft.client.graphics.Mesh;
+import ga.nullcraft.client.graphics.NuevMeshItem;
 import ga.nullcraft.client.graphics.NuevRenderer;
 import ga.nullcraft.client.graphics.PlayerCamera;
 import ga.nullcraft.client.local.LocalGameDirectory;
@@ -43,42 +44,14 @@ public class NullcraftClient {
     private float dx;
     private float dy;
     private float dz;
-	private Mesh mesh;
+	private NuevMeshItem[] meshItems;
 
     public NullcraftClient(Path dataDir){
         this.gameDirectory = new LocalGameDirectory(dataDir);
         this.tempStorage = new TempStorage();
     }
     
-    public NuevWindow getWindow() {
-    	return testWindow;
-    }
-    
-    public LocalModLoader getModLoader() {
-    	return modLoader;
-    }
-
-    public LocalGameDirectory getGameDirectory() {
-        return gameDirectory;
-    }
-
-    public WindowManager getWindowManager() {
-        return windowManager;
-    }
-
-    public ModelManager getModelManager() {
-        return modelManager;
-    }
-
-    public AudioManager getAudioManager() {
-        return audioManager;
-    }
-
-    public TempStorage getTempStorage() {
-        return tempStorage;
-    }
-
-	public void start() throws Exception {
+    public void start() throws Exception {
 		LaunchManager launchManager = new LaunchManager();
     	NullcraftClient client = launchManager.getClient();
     	EntityPlayer player = new EntityPlayer(0, 0, 0);
@@ -98,12 +71,24 @@ public class NullcraftClient {
 		renderer.init(testWindow);
 		
         float[] positions = new float[]{
-                0.0f, 0.5f, 0.0f,
-                -0.5f, -0.5f, 0.0f,
-                0.5f, -0.5f, 0.0f
+            -0.5f,  0.5f, -1.0f,
+            -0.5f, -0.5f, -1.0f,
+             0.5f, -0.5f, -1.0f,
+             0.5f,  0.5f, -1.0f,
         };
-        
-        mesh = new Mesh(positions);
+        float[] colours = new float[]{
+            0.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f,
+        };
+        int[] indices = new int[]{
+            0, 1, 3, 3, 1, 2,
+        };
+        Mesh mesh = new Mesh(positions, colours, indices);
+        NuevMeshItem item = new NuevMeshItem(mesh);
+        item.setPosition(0.0f, 0.0f, 0.0f);
+        meshItems = new NuevMeshItem[] { item };
 	}
 	
 	public void input() {
@@ -143,10 +128,42 @@ public class NullcraftClient {
             testWindow.setResized(false);
         }
         testWindow.clear();
-        renderer.render(testWindow, mesh);
+        renderer.render(testWindow, camera, meshItems);
 	}
 
 	public void cleanup() {
 		renderer.cleanup();
+		for(NuevMeshItem item : meshItems) {
+			item.getMesh().cleanup();
+		}
 	}
+	 
+    public NuevWindow getWindow() {
+    	return testWindow;
+    }
+    
+    public LocalModLoader getModLoader() {
+    	return modLoader;
+    }
+
+    public LocalGameDirectory getGameDirectory() {
+        return gameDirectory;
+    }
+
+    public WindowManager getWindowManager() {
+        return windowManager;
+    }
+
+    public ModelManager getModelManager() {
+        return modelManager;
+    }
+
+    public AudioManager getAudioManager() {
+        return audioManager;
+    }
+
+    public TempStorage getTempStorage() {
+        return tempStorage;
+    }
+
 }
