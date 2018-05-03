@@ -2,6 +2,7 @@ package ga.nullcraft.client;
 
 import java.nio.file.Path;
 
+import ga.nullcraft.client.window.NuevWindow;
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
@@ -30,8 +31,6 @@ public class NullcraftClient {
     private AudioManager audioManager;
 
     private TempStorage tempStorage;
-    
-    private NuevWindow testWindow;
     private NuevGameLoop gameLoop;
     
     private NuevRenderer renderer;
@@ -48,13 +47,13 @@ public class NullcraftClient {
         this.tempStorage = new TempStorage();
     }
     
-    public void start() throws Exception {
+    public void start(WindowManager windowManager) throws Exception {
+    	this.windowManager = windowManager;
+
 		LaunchManager launchManager = new LaunchManager();
     	NullcraftClient client = launchManager.getClient();
     	EntityPlayer player = new EntityPlayer(0, 0, 0);
-    	
-		testWindow = launchManager.getWindow();
-		testWindow.init();
+
     	gameLoop = new NuevGameLoop(client);
     	fullModLoader = new LocalFullModLoader(client.gameDirectory.getFullModStorage());
     	fullModLoader.loadMods();
@@ -63,7 +62,8 @@ public class NullcraftClient {
     	renderer = new NuevRenderer();
     	camera = new PlayerCamera(player);
     	gameLoop.run();
-    	testWindow.close();
+
+		windowManager.exit();
     }
 	
 	public void init() throws Exception {

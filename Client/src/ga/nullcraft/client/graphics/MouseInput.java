@@ -4,7 +4,7 @@ import org.joml.Vector2d;
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 
-import ga.nullcraft.client.NuevWindow;
+import ga.nullcraft.client.window.NuevWindow;
 
 public class MouseInput {
 	

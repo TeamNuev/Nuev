@@ -3,7 +3,7 @@ package ga.nullcraft.client.graphics;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
-import ga.nullcraft.client.NuevWindow;
+import ga.nullcraft.client.window.NuevWindow;
 import ga.nullcraft.client.resource.ShaderLoader;
 
 public class NuevRenderer {

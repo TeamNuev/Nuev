@@ -1,4 +1,5 @@
 package ga.nullcraft.client.graphics.gl.texture;
 
-public class GLTexture {
+public abstract class GLTexture {
+
 }

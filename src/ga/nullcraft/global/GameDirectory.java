@@ -2,7 +2,6 @@ package ga.nullcraft.global;
 
 import java.nio.file.Path;
 
-import ga.nullcraft.client.storage.CacheStorage;
 import ga.nullcraft.global.mod.IMod;
 import ga.nullcraft.global.storage.ConfigStorage;
 import ga.nullcraft.global.storage.ModStorage;
@@ -18,10 +17,6 @@ public class GameDirectory implements IGameDirectory {
 
 	public Path getPath() {
 		return path;
-	}
-
-	public CacheStorage getCacheStorage() {
-		return new CacheStorage(path.resolve(".data"));
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package ga.nullcraft.client;
+package ga.nullcraft.client.window;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -18,23 +18,23 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
-public class NuevWindow {
-	
-	private final int DEFAULT_WIDTH = 800;
-	private final int DEFAULT_HEIGHT = 500;
-	
-	// The window handle
-	private long window;
-	private int WIDTH;
-	private int HEIGHT;
-	private boolean FULL_SCREEN;
-	private boolean isResized;
-	private boolean mouseLocked = true;
+public class NuevWindow extends GameWindow {
 
-	NuevWindow(int width, int height, boolean isFullScreen) {
-		this.WIDTH = (width > 0) ? width : DEFAULT_WIDTH;
-		this.HEIGHT = (height > 0) ? height : DEFAULT_HEIGHT;
-		this.FULL_SCREEN = isFullScreen;
+	public static final String DEFAULT_TITLE = "Nuev";
+	
+	public static final int DEFAULT_WIDTH = 800;
+	public static final int DEFAULT_HEIGHT = 500;
+
+	public NuevWindow() {
+		super(DEFAULT_TITLE, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+	}
+
+	public NuevWindow(int width, int height) {
+		super(DEFAULT_TITLE, width, height);
+	}
+
+	public NuevWindow(String title, int width, int height) {
+		super(title, width, height);
 	}
 
 	void init() {
@@ -218,5 +218,30 @@ public class NuevWindow {
 	
 	public void setClearColor(float r, float g, float b, float alpha) {
 		GL11.glClearColor(r, g, b, alpha);
+	}
+
+	@Override
+	public WindowState getWindowState() {
+		return null;
+	}
+
+	@Override
+	public WindowMode getWindowMode() {
+		return null;
+	}
+
+	@Override
+	public void setWindowState(WindowState windowState) {
+
+	}
+
+	@Override
+	public void setWindowMode(WindowMode windowMode) {
+
+	}
+
+	@Override
+	public long getHandle() {
+		return 0;
 	}
 }
