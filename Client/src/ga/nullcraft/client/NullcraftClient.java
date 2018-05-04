@@ -2,14 +2,7 @@ package ga.nullcraft.client;
 
 import java.nio.file.Path;
 
-import ga.nullcraft.client.window.NuevWindow;
-import org.joml.Vector2f;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
-
 import ga.nullcraft.client.audio.AudioManager;
-import ga.nullcraft.client.graphics.Mesh;
-import ga.nullcraft.client.graphics.MouseInput;
 import ga.nullcraft.client.graphics.NuevMeshItem;
 import ga.nullcraft.client.graphics.NuevRenderer;
 import ga.nullcraft.client.graphics.PlayerCamera;
@@ -51,13 +44,12 @@ public class NullcraftClient {
     	this.windowManager = windowManager;
 
 		LaunchManager launchManager = new LaunchManager();
-    	NullcraftClient client = launchManager.getClient();
     	EntityPlayer player = new EntityPlayer(0, 0, 0);
 
-    	gameLoop = new NuevGameLoop(client);
-    	fullModLoader = new LocalFullModLoader(client.gameDirectory.getFullModStorage());
+    	gameLoop = new NuevGameLoop(this);
+    	fullModLoader = new LocalFullModLoader(this.getGameDirectory().getFullModStorage());
     	fullModLoader.loadMods();
-    	halfModLoader = new LocalHalfModLoader(client.gameDirectory.getHalfModStorage());
+    	halfModLoader = new LocalHalfModLoader(this.getGameDirectory().getHalfModStorage());
     	halfModLoader.loadMods();
     	renderer = new NuevRenderer();
     	camera = new PlayerCamera(player);
@@ -66,8 +58,7 @@ public class NullcraftClient {
 		windowManager.exit();
     }
 	
-	public void init() throws Exception {
-		renderer.init(testWindow);
+	/*public void init() throws Exception {
 		
         float[] positions = new float[]{
             -0.5f,  0.5f, -1.0f,
@@ -145,11 +136,7 @@ public class NullcraftClient {
 		for(NuevMeshItem item : meshItems) {
 			item.getMesh().cleanup();
 		}
-	}
-	 
-    public NuevWindow getWindow() {
-    	return testWindow;
-    }
+	}*/
     
     public LocalFullModLoader getModLoader() {
     	return fullModLoader;

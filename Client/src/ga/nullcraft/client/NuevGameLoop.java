@@ -1,7 +1,6 @@
 package ga.nullcraft.client;
 
 import ga.nullcraft.client.graphics.MouseInput;
-import ga.nullcraft.client.window.NuevWindow;
 
 public class NuevGameLoop implements Runnable {
 	

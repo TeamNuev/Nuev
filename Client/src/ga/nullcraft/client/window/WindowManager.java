@@ -4,6 +4,7 @@ import ga.nullcraft.client.NullcraftClient;
 import ga.nullcraft.client.platform.input.InputManager;
 import ga.nullcraft.client.thread.NuevThread;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL;
 
 /**
  * Manage game window
@@ -52,6 +53,9 @@ public class WindowManager {
         this.window = window;
         this.input = new InputManager(this);
         this.isStarted = false;
+
+        setCurrentWindow(getWindow());
+        GL.createCapabilities();
     }
 
     public GameWindow getWindow() {
@@ -98,6 +102,5 @@ public class WindowManager {
             return;
 
         getWindow().destroy();
-
     }
 }

@@ -4,18 +4,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import ga.nullcraft.client.window.NuevWindow;
+import ga.nullcraft.client.window.GameWindow;
+import ga.nullcraft.client.window.WindowManager;
 import joptsimple.ArgumentAcceptingOptionSpec;
 import joptsimple.NonOptionArgumentSpec;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 
 public class LaunchManager {
-	
-	private static OptionSet options;
-	private static NullcraftClient client;
-	private static NuevWindow window;
-	
+
 	public static void main(String[] args) throws Exception {
 		Path defaultPath = Paths.get(System.getProperty("user.home"), "Nuev");
 		
@@ -35,24 +32,12 @@ public class LaunchManager {
     	ArgumentAcceptingOptionSpec<String> gameDir = parser.accepts("gameDir").withOptionalArg().ofType(String.class).defaultsTo(defaultPath.toString());
     	NonOptionArgumentSpec<String> nonOptions = parser.nonOptions();
 
-    	options = parser.parse(args);
+		OptionSet options = parser.parse(args);
     	List<String> nonOptionList = options.valuesOf(nonOptions);
-    	
-    	client = new NullcraftClient(Paths.get(options.valueOf(gameDir)));
-		window = new NuevWindow(options.valueOf(width), options.valueOf(height), options.valueOf(isFullScreen));
-		
-		client.start();
-	}
-	
-	public NullcraftClient getClient() {
-		return client;
-	}
-	
-	public NuevWindow getWindow() {
-		return window;
-	}
-	
-	public OptionSet getOptions() {
-		return options;
+
+		NullcraftClient client = new NullcraftClient(Paths.get(options.valueOf(gameDir)));
+		WindowManager windowManager = new WindowManager(new GameWindow("Nuev", options.valueOf(width), options.valueOf(height)));
+
+		windowManager.run(client);
 	}
 }

@@ -1,8 +1,11 @@
 package ga.nullcraft.client.window;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 import org.lwjgl.system.MemoryUtil;
+
+import java.nio.IntBuffer;
 
 public class GameWindow {
 
@@ -12,14 +15,6 @@ public class GameWindow {
 
     private WindowState windowState;
     private WindowMode windowMode;
-
-    private int clientX;
-    private int clientY;
-
-    private int width;
-    private int height;
-
-    private boolean visible;
 
     public GameWindow(String title, int width, int height){
         this(title, 0, 0, width, height);
@@ -34,33 +29,16 @@ public class GameWindow {
 
         this.title = title;
 
-        this.visible = false;
+        initGL();
 
-        this.clientX = clientX;
-        this.clientY = clientY;
-
-        this.width = width;
-        this.height = height;
+        setClientLocation(clientX, clientY);
+        setSize(width, height);
     }
 
-    {
-        setWindowHint(GLFW.GLFW_VISIBLE, false);
-        setWindowHint(GLFW.GLFW_RESIZABLE, false);
-
+    private void initGL(){
         GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, WindowManager.GL_VERSION);
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, WindowManager.GL_VERSION_MINOR);
-
-        GLFW.glfwSetFramebufferSizeCallback(getHandle(), new GLFWFramebufferSizeCallback() {
-            @Override
-            public void invoke(long window, int width, int height) {
-                if (window != getHandle())
-                    return;
-
-                GameWindow.this.width = width;
-                GameWindow.this.height = height;
-            }
-        });
     }
 
     public long getHandle(){
@@ -76,19 +54,37 @@ public class GameWindow {
     }
 
     public int getClientX(){
-        return clientX;
+        return getClientSize()[0];
     }
 
     public int getClientY(){
-        return clientY;
+        return getClientSize()[1];
+    }
+
+    public int[] getClientSize(){
+        IntBuffer x = BufferUtils.createIntBuffer(1);
+        IntBuffer y = BufferUtils.createIntBuffer(1);
+
+        GLFW.glfwGetWindowPos(getHandle(), x, y);
+
+        return new int[]{ x.get(), y.get() };
     }
 
     public int getWidth(){
-        return width;
+        return getWindowSize()[0];
     }
 
     public int getHeight(){
-        return height;
+        return getWindowSize()[1];
+    }
+
+    public int[] getWindowSize(){
+        IntBuffer width = BufferUtils.createIntBuffer(1);
+        IntBuffer height = BufferUtils.createIntBuffer(1);
+
+        GLFW.glfwGetWindowSize(getHandle(), width, height);
+
+        return new int[]{ width.get(), height.get() };
     }
 
     public String getTitle(){
@@ -96,7 +92,7 @@ public class GameWindow {
     }
 
     public boolean isVisible() {
-        return visible;
+        return GLFW.glfwGetWindowAttrib(getHandle(), GLFW.GLFW_VISIBLE) == GLFW.GLFW_TRUE;
     }
 
     public boolean isFocused(){
@@ -111,11 +107,11 @@ public class GameWindow {
 
         switch(windowState){
             case NORMAL:
-                setWindowHint(GLFW.GLFW_MAXIMIZED, false);
+                setWindowAttrib(GLFW.GLFW_MAXIMIZED, false);
                 break;
 
             case MAXIMIZED:
-                setWindowHint(GLFW.GLFW_MAXIMIZED, true);
+                setWindowAttrib(GLFW.GLFW_MAXIMIZED, true);
                 break;
 
             case MINIMIZED:
@@ -135,17 +131,17 @@ public class GameWindow {
 
         switch(windowMode){
             case RESIZABLE:
-                setWindowHint(GLFW.GLFW_DECORATED, true);
-                setWindowHint(GLFW.GLFW_RESIZABLE, true);
+                setWindowAttrib(GLFW.GLFW_DECORATED, true);
+                setWindowAttrib(GLFW.GLFW_RESIZABLE, true);
                 break;
 
             case FIXED:
-                setWindowHint(GLFW.GLFW_DECORATED, true);
-                setWindowHint(GLFW.GLFW_RESIZABLE, false);
+                setWindowAttrib(GLFW.GLFW_DECORATED, true);
+                setWindowAttrib(GLFW.GLFW_RESIZABLE, false);
                 break;
 
             case BORDERLESS:
-                setWindowHint(GLFW.GLFW_DECORATED, false);
+                setWindowAttrib(GLFW.GLFW_DECORATED, false);
                 break;
 
             default:
@@ -154,22 +150,14 @@ public class GameWindow {
     }
 
     public void setVisible(boolean flag) {
-        if (this.visible == flag)
-            return;
-
-        this.visible = flag;
-
-        makeCurrent();
         if (flag)
             GLFW.glfwShowWindow(getHandle());
         else
             GLFW.glfwHideWindow(getHandle());
     }
 
-    protected void setWindowHint(int hint, boolean flag){
-        makeCurrent();
-
-        GLFW.glfwWindowHint(hint, flag ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
+    protected void setWindowAttrib(int hint, boolean flag){
+        GLFW.glfwSetWindowAttrib(getHandle(), hint, flag ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
     }
 
     public void setClientX(int clientX){
@@ -198,17 +186,10 @@ public class GameWindow {
 
         this.title = title;
 
-        makeCurrent();
+
     }
 
     public void setSize(int width, int height){
-        if (this.width != width)
-            this.width = width;
-
-        if (this.height != height)
-            this.height = height;
-
-        makeCurrent();
         GLFW.glfwSetWindowSize(getHandle(), width, height);
     }
 
