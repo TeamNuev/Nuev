@@ -1,18 +1,25 @@
 package ga.nullcraft.client.platform.input.mouse;
 
 import ga.nullcraft.client.platform.input.InputEvent;
-import ga.nullcraft.client.platform.input.InputManager;
 
 public class MouseEvent implements InputEvent {
 
-    private InputManager input;
+    private MouseInput input;
 
-    public MouseEvent(InputManager input){
+    protected boolean userTriggered;
 
+    public MouseEvent(MouseInput input){
+        this.input = input;
+
+        this.userTriggered = false;
+    }
+
+    public MouseInput getInput(){
+        return input;
     }
 
     @Override
-    public InputManager getInput() {
-        return input;
+    public boolean isTriggeredByUser() {
+        return userTriggered;
     }
 }

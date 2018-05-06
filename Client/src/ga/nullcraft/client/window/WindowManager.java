@@ -1,9 +1,11 @@
 package ga.nullcraft.client.window;
 
 import ga.nullcraft.client.NullcraftClient;
+import ga.nullcraft.client.audio.AudioManager;
 import ga.nullcraft.client.platform.input.InputManager;
-import ga.nullcraft.client.thread.NuevThread;
+import ga.nullcraft.client.thread.*;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 
 /**
@@ -21,16 +23,20 @@ public class WindowManager {
 
     private NullcraftClient client;
 
-    private NuevThread renderThread;
-    private NuevThread updateThread;
-    private NuevThread audiothread;
-    private NuevThread inputThread;
+    private RenderThread renderThread;
+    private AudioThread audiothread;
+    private InputThread inputThread;
 
     private InputManager input;
+    private AudioManager audio;
 
     private boolean isStarted;
 
+    private String name;
+
     private GameWindow window;
+
+    private final Object renderLock = new Object();
 
     private boolean vsync = false;
 
@@ -45,17 +51,17 @@ public class WindowManager {
         return currentWindow;
     }
 
-    public WindowManager(String title){
-        this.window = new GameWindow(title, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    public WindowManager(String name){
+        this.name = name;
+
+        this.input = new InputManager(this);
+        this.audio = new AudioManager(this);
+
+        this.isStarted = false;
     }
 
-    public WindowManager(GameWindow window){
-        this.window = window;
-        this.input = new InputManager(this);
-        this.isStarted = false;
-
-        setCurrentWindow(getWindow());
-        GL.createCapabilities();
+    public String getName() {
+        return name;
     }
 
     public GameWindow getWindow() {
@@ -64,6 +70,10 @@ public class WindowManager {
 
     public InputManager getInput() {
         return input;
+    }
+
+    public AudioManager getAudio() {
+        return audio;
     }
 
     public boolean isStarted() {
@@ -77,7 +87,7 @@ public class WindowManager {
         this.vsync = flag;
 
         getWindow().makeCurrent();
-        GLFW.glfwSwapInterval(1);
+        GLFW.glfwSwapInterval(flag ? 1 : 0);
     }
 
     public boolean isVsync() {
@@ -87,13 +97,77 @@ public class WindowManager {
     public void run(NullcraftClient client) throws Exception {
         if (isStarted)
             throw new Exception("Client already started with this window");
+        this.isStarted = true;
 
         this.client = client;
 
+        if (!GLFW.glfwInit())
+            throw new Exception("Unable to initialize GLFW");
+
+        GLFWErrorCallback.createPrint(System.err).set();
+
+        hintWindow();
+        this.window = new GameWindow(getName(), DEFAULT_WIDTH, DEFAULT_HEIGHT);
+
+        this.renderThread = new RenderThread(this.renderTask());
+        this.audiothread = new AudioThread(this.audio);
+        this.inputThread = new InputThread(this.getInput());
+
         client.start(this);
+
+        this.renderThread.start();
+        this.audiothread.start();
+        this.inputThread.start();
+
+        listenEvent();
+    }
+
+    private void hintWindow() {
+        GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
+        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, GL_VERSION);
+        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, GL_VERSION_MINOR);
+    }
+
+    private void listenEvent(){
+        while(isStarted) {
+            GLFW.glfwPollEvents();
+        }
     }
 
     public void cycleMode(){
+
+    }
+
+    public void renderInitialize(){
+        getWindow().makeCurrent();
+        GL.createCapabilities();
+
+        //temp_code
+        try {
+            client.init();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Runnable renderTask(){
+        return () -> {
+            renderInitialize();
+
+            while(isStarted) {
+
+                //temp_code
+                client.render();
+
+                synchronized (renderLock) {
+                    if (isStarted)
+                        GLFW.glfwSwapBuffers(getWindow().getHandle());
+                }
+            }
+        };
+    }
+
+    public void update(){
 
     }
 
@@ -101,6 +175,10 @@ public class WindowManager {
         if (!isStarted)
             return;
 
-        getWindow().destroy();
+        synchronized (renderLock){
+            isStarted = false;
+
+            getWindow().destroy();
+        }
     }
 }

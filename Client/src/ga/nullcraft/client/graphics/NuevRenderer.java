@@ -1,5 +1,6 @@
 package ga.nullcraft.client.graphics;
 
+import ga.nullcraft.client.window.GameWindow;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
@@ -17,7 +18,7 @@ public class NuevRenderer {
 		transformation = new Transformation();
 	}
 	
-	public void init(NuevWindow window) throws Exception {
+	public void init(GameWindow window) throws Exception {
 		shader = new NuevShader();
 		ShaderLoader loader = new ShaderLoader();
 		shader.createVertexShader(loader.loadShader("vertex.vs"));
@@ -28,13 +29,7 @@ public class NuevRenderer {
 		shader.createUniform("modelViewMatrix");
 	}
 	
-	public void render(NuevWindow window, ICamera camera, NuevMeshItem[] items) {
-		window.clear();
-		if (window.isResized()) {
-            GL11.glViewport(0, 0, window.getWidth(), window.getHeight());
-            window.setResized(false);
-        }
-        
+	public void render(GameWindow window, ICamera camera, NuevMeshItem[] items) {
 		shader.bind();
 		
 		Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);

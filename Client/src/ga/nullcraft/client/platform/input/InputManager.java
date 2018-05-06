@@ -5,7 +5,7 @@ import ga.nullcraft.client.platform.input.mouse.MouseInput;
 import ga.nullcraft.client.window.GameWindow;
 import ga.nullcraft.client.window.WindowManager;
 
-public class InputManager {
+public class InputManager implements Runnable {
 
     private WindowManager windowManager;
 
@@ -15,8 +15,8 @@ public class InputManager {
     public InputManager(WindowManager windowManager){
         this.windowManager = windowManager;
 
-        this.mouse = new MouseInput(this);
-        this.keyboard = new KeyboardInput(this);
+        this.mouse = new MouseInput();
+        this.keyboard = new KeyboardInput();
     }
 
     public WindowManager getWindowManager() {
@@ -25,5 +25,21 @@ public class InputManager {
 
     public GameWindow getWindow(){
         return getWindowManager().getWindow();
+    }
+
+    public MouseInput getMouse() {
+        return mouse;
+    }
+
+    public KeyboardInput getKeyboard() {
+        return keyboard;
+    }
+
+    @Override
+    public void run() {
+        long windowHandle = getWindow().getHandle();
+
+        ((DeviceInput) this.mouse).initializeDevice(windowHandle);
+        ((DeviceInput) this.keyboard).initializeDevice(windowHandle);
     }
 }

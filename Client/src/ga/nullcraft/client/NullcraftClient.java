@@ -3,18 +3,27 @@ package ga.nullcraft.client;
 import java.nio.file.Path;
 
 import ga.nullcraft.client.audio.AudioManager;
+import ga.nullcraft.client.graphics.Mesh;
 import ga.nullcraft.client.graphics.NuevMeshItem;
 import ga.nullcraft.client.graphics.NuevRenderer;
 import ga.nullcraft.client.graphics.PlayerCamera;
 import ga.nullcraft.client.local.LocalGameDirectory;
 import ga.nullcraft.client.model.ModelManager;
+import ga.nullcraft.client.platform.input.keyboard.IKeyboardListener;
+import ga.nullcraft.client.platform.input.keyboard.KeyboardEvent;
+import ga.nullcraft.client.platform.input.keyboard.KeyboardKeyEvent;
+import ga.nullcraft.client.platform.input.mouse.IMouseListener;
+import ga.nullcraft.client.platform.input.mouse.MouseButtonEvent;
+import ga.nullcraft.client.platform.input.mouse.MouseMoveEvent;
+import ga.nullcraft.client.platform.input.mouse.WheelEvent;
 import ga.nullcraft.client.storage.TempStorage;
 import ga.nullcraft.client.window.WindowManager;
 import ga.nullcraft.global.game.entity.EntityPlayer;
 import ga.nullcraft.global.mod.loader.LocalFullModLoader;
 import ga.nullcraft.global.mod.loader.LocalHalfModLoader;
+import org.lwjgl.glfw.GLFW;
 
-public class NullcraftClient {
+public class NullcraftClient implements IKeyboardListener, IMouseListener {
     private LocalGameDirectory gameDirectory;
     private LocalFullModLoader fullModLoader;
     private LocalHalfModLoader halfModLoader;
@@ -24,7 +33,6 @@ public class NullcraftClient {
     private AudioManager audioManager;
 
     private TempStorage tempStorage;
-    private NuevGameLoop gameLoop;
     
     private NuevRenderer renderer;
     private PlayerCamera camera;
@@ -43,22 +51,24 @@ public class NullcraftClient {
     public void start(WindowManager windowManager) throws Exception {
     	this.windowManager = windowManager;
 
+        windowManager.getInput().getMouse().addListener(this);
+        windowManager.getInput().getKeyboard().addListener(this);
+
 		LaunchManager launchManager = new LaunchManager();
     	EntityPlayer player = new EntityPlayer(0, 0, 0);
 
-    	gameLoop = new NuevGameLoop(this);
     	fullModLoader = new LocalFullModLoader(this.getGameDirectory().getFullModStorage());
     	fullModLoader.loadMods();
     	halfModLoader = new LocalHalfModLoader(this.getGameDirectory().getHalfModStorage());
     	halfModLoader.loadMods();
+
     	renderer = new NuevRenderer();
     	camera = new PlayerCamera(player);
-    	gameLoop.run();
-
-		windowManager.exit();
     }
 	
-	/*public void init() throws Exception {
+	public void init() throws Exception {
+
+        renderer.init(getWindowManager().getWindow());
 		
         float[] positions = new float[]{
             -0.5f,  0.5f, -1.0f,
@@ -81,54 +91,8 @@ public class NullcraftClient {
         meshItems = new NuevMeshItem[] { item };
 	}
 	
-	public void input(MouseInput mouseInput) {
-		dx = 0;
-		dy = 0;
-		dz = 0;
-		if (testWindow.isKeyPressed(GLFW.GLFW_KEY_F11)) {
-			testWindow.setScreenMode(!testWindow.isFullScreen());
-		}
-		if (testWindow.isKeyPressed(GLFW.GLFW_KEY_W)) {
-			dz = -1;
-		}
-		else if (testWindow.isKeyPressed(GLFW.GLFW_KEY_S)) {
-			dz = 1;
-		}
-		if (testWindow.isKeyPressed(GLFW.GLFW_KEY_A)) {
-			dx = -1;
-		}
-		else if (testWindow.isKeyPressed(GLFW.GLFW_KEY_D)) {
-			dx = 1;
-		}
-		if (testWindow.isKeyPressed(GLFW.GLFW_KEY_LEFT_SHIFT)) {
-			dy = -1;
-		}
-		else if (testWindow.isKeyPressed(GLFW.GLFW_KEY_SPACE)) {
-			dy = 1;
-		}
-		if (testWindow.isKeyPressed(GLFW.GLFW_KEY_UP)) {
-			MOUSE_SENSITIVITY += 0.02f;
-		}
-		else if (testWindow.isKeyPressed(GLFW.GLFW_KEY_DOWN)) {
-			MOUSE_SENSITIVITY -= 0.02f;
-		}
-	}
-	
-	public void update(MouseInput mouseInput) {
-		camera.movePosition(dx * 0.05f, dy * 0.05f, dz * 0.05f);
-		
-		Vector2f rotVec = mouseInput.getDisplVec();
-		GLFW.glfwSetCursorPos(testWindow.getWindowHandle(), testWindow.getWidth()/2, testWindow.getHeight()/2);
-		camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
-	}
-	
 	public void render() {
-        if (testWindow.isResized()) {
-            GL11.glViewport(0, 0, testWindow.getWidth(), testWindow.getHeight());
-            testWindow.setResized(false);
-        }
-        testWindow.clear();
-        renderer.render(testWindow, camera, meshItems);
+        renderer.render(getWindowManager().getWindow(), camera, meshItems);
 	}
 
 	public void cleanup() {
@@ -136,7 +100,7 @@ public class NullcraftClient {
 		for(NuevMeshItem item : meshItems) {
 			item.getMesh().cleanup();
 		}
-	}*/
+	}
     
     public LocalFullModLoader getModLoader() {
     	return fullModLoader;
@@ -166,4 +130,65 @@ public class NullcraftClient {
         return tempStorage;
     }
 
+    @Override
+    public void onKeyDown(KeyboardKeyEvent e) {
+        dx = 0;
+        dy = 0;
+        dz = 0;
+        if (e.isKeyPressed(GLFW.GLFW_KEY_F11)) {
+            getWindowManager().cycleMode();
+        }
+        if (e.isKeyPressed(GLFW.GLFW_KEY_W)) {
+            dz = -1;
+        }
+        else if (e.isKeyPressed(GLFW.GLFW_KEY_S)) {
+            dz = 1;
+        }
+        if (e.isKeyPressed(GLFW.GLFW_KEY_A)) {
+            dx = -1;
+        }
+        else if (e.isKeyPressed(GLFW.GLFW_KEY_D)) {
+            dx = 1;
+        }
+        if (e.isKeyPressed(GLFW.GLFW_KEY_LEFT_SHIFT)) {
+            dy = -1;
+        }
+        else if (e.isKeyPressed(GLFW.GLFW_KEY_SPACE)) {
+            dy = 1;
+        }
+        if (e.isKeyPressed(GLFW.GLFW_KEY_UP)) {
+            MOUSE_SENSITIVITY += 0.02f;
+        }
+        else if (e.isKeyPressed(GLFW.GLFW_KEY_DOWN)) {
+            MOUSE_SENSITIVITY -= 0.02f;
+        }
+    }
+
+    @Override
+    public void onKeyUp(KeyboardKeyEvent e) {
+
+    }
+
+    @Override
+    public void onMouseMove(MouseMoveEvent e) {
+        camera.movePosition(dx * 0.05f, dy * 0.05f, dz * 0.05f);
+
+        GLFW.glfwSetCursorPos(getWindowManager().getWindow().getHandle(), getWindowManager().getWindow().getWidth()/2, getWindowManager().getWindow().getHeight()/2);
+        camera.moveRotation((float) e.getDeltaX() * MOUSE_SENSITIVITY, (float) e.getDeltaY() * MOUSE_SENSITIVITY, 0);
+    }
+
+    @Override
+    public void onMouseDown(MouseButtonEvent e) {
+
+    }
+
+    @Override
+    public void onMouseUp(MouseButtonEvent e) {
+
+    }
+
+    @Override
+    public void onScroll(WheelEvent e) {
+
+    }
 }

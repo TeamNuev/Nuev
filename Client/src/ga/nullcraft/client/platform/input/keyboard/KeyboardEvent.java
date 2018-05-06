@@ -5,14 +5,20 @@ import ga.nullcraft.client.platform.input.InputManager;
 
 public class KeyboardEvent implements InputEvent {
 
-    private InputManager input;
+    private KeyboardInput input;
 
-    public KeyboardEvent(InputManager input){
+    protected boolean userTriggered;
 
+    public KeyboardEvent(KeyboardInput input){
+        this.input = input;
+    }
+
+    public KeyboardInput getInput() {
+        return input;
     }
 
     @Override
-    public InputManager getInput() {
-        return input;
+    public boolean isTriggeredByUser() {
+        return userTriggered;
     }
 }

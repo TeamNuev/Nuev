@@ -1,13 +1,15 @@
 package ga.nullcraft.client.thread;
 
-public class NuevThread extends Thread {
+public abstract class NuevThread extends Thread {
 
-    public NuevThread(){
+    private Runnable handler;
 
+    public NuevThread(Runnable handler){
+        this.handler = handler;
     }
 
     @Override
-    public void run() {
-
+    public void run(){
+        this.handler.run();
     }
 }

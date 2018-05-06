@@ -17,28 +17,23 @@ public class GameWindow {
     private WindowMode windowMode;
 
     public GameWindow(String title, int width, int height){
-        this(title, 0, 0, width, height);
-    }
+        this(createWindow(title, width, height), title);
 
-    public GameWindow(String title, int clientX, int clientY, int width, int height){
-        this(createWindow(title, width, height), title, clientX, clientY, width, height);
-    }
-
-    public GameWindow(long handle, String title, int clientX, int clientY, int width, int height){
-        this.handle = handle;
-
-        this.title = title;
-
-        initGL();
-
-        setClientLocation(clientX, clientY);
         setSize(width, height);
     }
 
-    private void initGL(){
-        GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
-        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, WindowManager.GL_VERSION);
-        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, WindowManager.GL_VERSION_MINOR);
+    public GameWindow(String title, int clientX, int clientY, int width, int height){
+        this(title, width, height);
+
+        setClientLocation(clientX, clientY);
+    }
+
+    public GameWindow(long handle, String title){
+        if (handle == 0)
+            throw new RuntimeException("Failed to create the GLFW window");
+
+        this.handle = handle;
+        this.title = title;
     }
 
     public long getHandle(){
@@ -198,11 +193,15 @@ public class GameWindow {
             WindowManager.setCurrentWindow(this);
     }
 
+    public boolean windowShouldClose(){
+        return GLFW.glfwWindowShouldClose(getHandle());
+    }
+
     public void destroy(){
         GLFW.glfwDestroyWindow(getHandle());
     }
 
     public static long createWindow(String title, int width, int height){
-        return GLFW.glfwCreateWindow(width, height, title, MemoryUtil.NULL, MemoryUtil.NULL);
+        return GLFW.glfwCreateWindow(640, 480, title, MemoryUtil.NULL, MemoryUtil.NULL);
     }
 }

@@ -36,7 +36,7 @@ public class LaunchManager {
     	List<String> nonOptionList = options.valuesOf(nonOptions);
 
 		NullcraftClient client = new NullcraftClient(Paths.get(options.valueOf(gameDir)));
-		WindowManager windowManager = new WindowManager(new GameWindow("Nuev", options.valueOf(width), options.valueOf(height)));
+		WindowManager windowManager = new WindowManager("Nuev");
 
 		windowManager.run(client);
 	}
