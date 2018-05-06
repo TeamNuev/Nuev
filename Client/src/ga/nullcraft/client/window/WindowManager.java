@@ -23,6 +23,7 @@ public class WindowManager {
 
     private NullcraftClient client;
 
+    private UpdateThread updateThread;
     private RenderThread renderThread;
     private AudioThread audiothread;
     private InputThread inputThread;
@@ -109,12 +110,14 @@ public class WindowManager {
         hintWindow();
         this.window = new GameWindow(getName(), DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
+        this.updateThread = new UpdateThread();
         this.renderThread = new RenderThread(this.renderTask());
         this.audiothread = new AudioThread(this.audio);
         this.inputThread = new InputThread(this.getInput());
 
         client.start(this);
 
+        this.updateThread.start();
         this.renderThread.start();
         this.audiothread.start();
         this.inputThread.start();
