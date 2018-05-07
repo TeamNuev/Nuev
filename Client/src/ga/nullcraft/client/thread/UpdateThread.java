@@ -1,6 +1,6 @@
 package ga.nullcraft.client.thread;
 
-public class UpdateThread extends NuevThread {
+public class UpdateThread extends LoopThread {
     public UpdateThread(Runnable handler) {
         super(handler);
     }

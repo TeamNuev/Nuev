@@ -24,8 +24,11 @@ public class ThreadLimiter {
     }
 
     public double next(){
-        elapsed = Math.max((lastTime = System.nanoTime()) - lastTime, interval);
-        return lastTime + interval;
+        long now = System.nanoTime();
+        elapsed = Math.max((now - lastTime) / 1000000d, interval);
+        lastTime = now;
+
+        return lastTime + Math.min(interval, Math.max((interval * 2 - elapsed), 0)) * 1000000d;
     }
 
 }

@@ -87,11 +87,15 @@ public class GameWindow {
     }
 
     public boolean isVisible() {
-        return GLFW.glfwGetWindowAttrib(getHandle(), GLFW.GLFW_VISIBLE) == GLFW.GLFW_TRUE;
+        return getWindowAttrib(GLFW.GLFW_VISIBLE) == GLFW.GLFW_TRUE;
+    }
+
+    public void focus(){
+        GLFW.glfwFocusWindow(getHandle());
     }
 
     public boolean isFocused(){
-        return GLFW.glfwGetWindowAttrib(getHandle(), GLFW.GLFW_FOCUSED) == GLFW.GLFW_TRUE;
+        return getWindowAttrib(GLFW.GLFW_FOCUSED) == GLFW.GLFW_TRUE;
     }
 
     public void setWindowState(WindowState windowState) {
@@ -102,11 +106,11 @@ public class GameWindow {
 
         switch(windowState){
             case NORMAL:
-                setWindowAttrib(GLFW.GLFW_MAXIMIZED, false);
+                GLFW.glfwRestoreWindow(getHandle());
                 break;
 
             case MAXIMIZED:
-                setWindowAttrib(GLFW.GLFW_MAXIMIZED, true);
+                GLFW.glfwMaximizeWindow(getHandle());
                 break;
 
             case MINIMIZED:
@@ -144,6 +148,14 @@ public class GameWindow {
         }
     }
 
+    public void setFloating(boolean flag){
+        setWindowAttrib(GLFW.GLFW_FLOATING, flag);
+    }
+
+    public boolean isFloated(){
+        return getWindowAttrib(GLFW.GLFW_FLOATING) == GLFW.GLFW_TRUE;
+    }
+
     public void setVisible(boolean flag) {
         if (flag)
             GLFW.glfwShowWindow(getHandle());
@@ -151,8 +163,16 @@ public class GameWindow {
             GLFW.glfwHideWindow(getHandle());
     }
 
-    protected void setWindowAttrib(int hint, boolean flag){
-        GLFW.glfwSetWindowAttrib(getHandle(), hint, flag ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
+    protected void setWindowAttrib(int attrib, boolean flag){
+        setWindowAttrib(attrib, flag ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
+    }
+
+    protected void setWindowAttrib(int attrib, int value){
+        GLFW.glfwSetWindowAttrib(getHandle(), attrib, value);
+    }
+
+    protected int getWindowAttrib(int attrib){
+        return GLFW.glfwGetWindowAttrib(getHandle(), attrib);
     }
 
     public void setClientX(int clientX){
@@ -181,7 +201,7 @@ public class GameWindow {
 
         this.title = title;
 
-
+        GLFW.glfwSetWindowTitle(getHandle(), title);
     }
 
     public void setSize(int width, int height){
@@ -189,8 +209,7 @@ public class GameWindow {
     }
 
     public void makeCurrent(){
-        if (WindowManager.getCurrentWindow() != this)
-            WindowManager.setCurrentWindow(this);
+        WindowManager.setCurrentWindow(this);
     }
 
     public boolean windowShouldClose(){

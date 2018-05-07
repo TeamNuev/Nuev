@@ -19,6 +19,8 @@ public class MouseInput extends DeviceInput {
     private double wheelX;
     private double wheelY;
 
+    private long windowHandle;
+
     private MouseInputHandler handler;
 
     public MouseInput() {
@@ -63,9 +65,14 @@ public class MouseInput extends DeviceInput {
 
     @Override
     protected void initializeDevice(long windowHandle) {
+        this.windowHandle = windowHandle;
         GLFW.glfwSetCursorPosCallback(windowHandle, handler.cursorPosListener);
         GLFW.glfwSetMouseButtonCallback(windowHandle, handler.mouseButtonListener);
         GLFW.glfwSetScrollCallback(windowHandle, handler.scrollListener);
+    }
+
+    public void setPosition(double x, double y){
+        GLFW.glfwSetCursorPos(windowHandle, x, y);
     }
 
     public void addListener(IMouseListener listener) {

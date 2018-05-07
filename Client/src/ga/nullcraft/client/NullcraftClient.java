@@ -17,7 +17,10 @@ import ga.nullcraft.client.platform.input.mouse.MouseButtonEvent;
 import ga.nullcraft.client.platform.input.mouse.MouseMoveEvent;
 import ga.nullcraft.client.platform.input.mouse.WheelEvent;
 import ga.nullcraft.client.storage.TempStorage;
+import ga.nullcraft.client.window.VsyncMode;
 import ga.nullcraft.client.window.WindowManager;
+import ga.nullcraft.client.window.util.DisplayUtil;
+import ga.nullcraft.client.window.util.MonitorInfo;
 import ga.nullcraft.global.game.entity.EntityPlayer;
 import ga.nullcraft.global.mod.loader.LocalFullModLoader;
 import ga.nullcraft.global.mod.loader.LocalHalfModLoader;
@@ -140,6 +143,7 @@ public class NullcraftClient implements IKeyboardListener, IMouseListener {
         }
         if (e.isKeyPressed(GLFW.GLFW_KEY_W)) {
             dz = -1;
+            getWindowManager().getUpdateThread().setHz(1);
         }
         else if (e.isKeyPressed(GLFW.GLFW_KEY_S)) {
             dz = 1;
@@ -173,13 +177,15 @@ public class NullcraftClient implements IKeyboardListener, IMouseListener {
     public void onMouseMove(MouseMoveEvent e) {
         camera.movePosition(dx * 0.05f, dy * 0.05f, dz * 0.05f);
 
-        GLFW.glfwSetCursorPos(getWindowManager().getWindow().getHandle(), getWindowManager().getWindow().getWidth()/2, getWindowManager().getWindow().getHeight()/2);
+        e.getInput().setPosition(getWindowManager().getWindow().getWidth()/2, getWindowManager().getWindow().getHeight()/2);
+
         camera.moveRotation((float) e.getDeltaX() * MOUSE_SENSITIVITY, (float) e.getDeltaY() * MOUSE_SENSITIVITY, 0);
     }
 
     @Override
     public void onMouseDown(MouseButtonEvent e) {
-
+        System.out.println("update: " + getWindowManager().getUpdateThread().getElapsed());
+        System.out.println("render: " + getWindowManager().getRenderThread().getElapsed());
     }
 
     @Override
@@ -189,6 +195,10 @@ public class NullcraftClient implements IKeyboardListener, IMouseListener {
 
     @Override
     public void onScroll(WheelEvent e) {
+
+    }
+
+    public void update() {
 
     }
 }

@@ -4,8 +4,11 @@ import ga.nullcraft.client.NullcraftClient;
 import ga.nullcraft.client.audio.AudioManager;
 import ga.nullcraft.client.platform.input.InputManager;
 import ga.nullcraft.client.thread.*;
+import ga.nullcraft.client.window.util.DisplayUtil;
+import ga.nullcraft.client.window.util.MonitorInfo;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
 /**
@@ -38,14 +41,25 @@ public class WindowManager {
     private GameWindow window;
 
     private final Object renderLock = new Object();
+    private volatile boolean renderUpdate;
 
-    private boolean vsync = false;
+    private VsyncMode vsyncMode = VsyncMode.DISABLED;
 
     private static GameWindow currentWindow;
 
     protected static void setCurrentWindow(GameWindow window){
+        if (window == null) {
+            GLFW.glfwMakeContextCurrent(GLFW.GLFW_FALSE);
+            return;
+        }
+
+        long handle = window.getHandle();
+
+        if (GLFW.glfwGetCurrentContext() == handle)
+            return;
+
         currentWindow = window;
-        GLFW.glfwMakeContextCurrent(window.getHandle());
+        GLFW.glfwMakeContextCurrent(handle);
     }
 
     public static GameWindow getCurrentWindow(){
@@ -59,6 +73,7 @@ public class WindowManager {
         this.audio = new AudioManager(this);
 
         this.isStarted = false;
+        this.renderUpdate = false;
     }
 
     public String getName() {
@@ -81,18 +96,32 @@ public class WindowManager {
         return isStarted;
     }
 
-    public void setVSync(boolean flag){
-        if (this.vsync == flag)
+    public void setVSync(VsyncMode mode){
+        if (this.vsyncMode == mode)
             return;
 
-        this.vsync = flag;
-
-        getWindow().makeCurrent();
-        GLFW.glfwSwapInterval(flag ? 1 : 0);
+        this.vsyncMode = mode;
+        renderUpdate = true;
     }
 
-    public boolean isVsync() {
-        return vsync;
+    public VsyncMode getVsyncMode() {
+        return vsyncMode;
+    }
+
+    public UpdateThread getUpdateThread() {
+        return updateThread;
+    }
+
+    public RenderThread getRenderThread() {
+        return renderThread;
+    }
+
+    public InputThread getInputThread() {
+        return inputThread;
+    }
+
+    public AudioThread getAudiothread() {
+        return audiothread;
     }
 
     public void run(NullcraftClient client) throws Exception {
@@ -110,17 +139,22 @@ public class WindowManager {
         hintWindow();
         this.window = new GameWindow(getName(), DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
-        this.updateThread = new UpdateThread();
-        this.renderThread = new RenderThread(this.renderTask());
+        this.updateThread = new UpdateThread(this.updateTask());
+        this.renderThread = new RenderThread(this.renderTask()){
+          @Override
+          public void initialize(){
+              renderInitialize();
+          }
+        };
         this.audiothread = new AudioThread(this.audio);
         this.inputThread = new InputThread(this.getInput());
-
-        client.start(this);
 
         this.updateThread.start();
         this.renderThread.start();
         this.audiothread.start();
         this.inputThread.start();
+
+        client.start(this);
 
         listenEvent();
     }
@@ -138,12 +172,27 @@ public class WindowManager {
     }
 
     public void cycleMode(){
+        //temp_code
+        if (getWindow().getWindowMode() == WindowMode.RESIZABLE){
+            getWindow().setWindowMode(WindowMode.BORDERLESS);
+            getWindow().setWindowState(WindowState.MAXIMIZED);
 
+            GLFWVidMode mode = DisplayUtil.getCurrentDisplayMode();
+            getWindow().setClientLocation(0, 0);
+            getWindow().setSize(mode.width(), mode.height());
+        }
+        else{
+            getWindow().setWindowMode(WindowMode.RESIZABLE);
+            getWindow().setWindowState(WindowState.NORMAL);
+        }
+
+        getWindow().focus();
     }
 
     public void renderInitialize(){
-        getWindow().makeCurrent();
+        setCurrentWindow(getWindow());
         GL.createCapabilities();
+        renderUpdate = true;
 
         //temp_code
         try {
@@ -153,25 +202,33 @@ public class WindowManager {
         }
     }
 
+    public void updateRenderSettings(){
+        GLFW.glfwSwapInterval(vsyncMode.getMode());
+    }
+
     public Runnable renderTask(){
         return () -> {
-            renderInitialize();
+            if (renderUpdate) {
+                updateRenderSettings();
+                renderUpdate = false;
+            }
 
-            while(isStarted) {
+            //temp_code
+            client.render();
 
-                //temp_code
-                client.render();
-
-                synchronized (renderLock) {
-                    if (isStarted)
-                        GLFW.glfwSwapBuffers(getWindow().getHandle());
-                }
+            synchronized (renderLock) {
+                if (isStarted)
+                    GLFW.glfwSwapBuffers(getWindow().getHandle());
             }
         };
     }
 
-    public void update(){
+    public Runnable updateTask(){
+        return () -> {
 
+            //temp_code
+            client.update();
+        };
     }
 
     public void exit(){
