@@ -168,6 +168,11 @@ public class WindowManager {
     private void listenEvent(){
         while(isStarted) {
             GLFW.glfwPollEvents();
+
+            if (getWindow().windowShouldClose()){
+                exit();
+                return;
+            }
         }
     }
 
@@ -231,14 +236,26 @@ public class WindowManager {
         };
     }
 
-    public void exit(){
+    public void stop(){
         if (!isStarted)
             return;
+        isStarted = false;
 
-        synchronized (renderLock){
-            isStarted = false;
+        this.renderThread.interrupt();
+        this.updateThread.interrupt();
+        this.inputThread.interrupt();
+        this.audiothread.interrupt();
+    }
 
-            getWindow().destroy();
+    public void exit(){
+        if (isStarted) {
+            stop();
+
+            synchronized (renderLock) {
+                isStarted = false;
+
+                getWindow().destroy();
+            }
         }
     }
 }
