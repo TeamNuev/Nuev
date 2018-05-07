@@ -143,7 +143,6 @@ public class NullcraftClient implements IKeyboardListener, IMouseListener {
         }
         if (e.isKeyPressed(GLFW.GLFW_KEY_W)) {
             dz = -1;
-            getWindowManager().getUpdateThread().setHz(1);
         }
         else if (e.isKeyPressed(GLFW.GLFW_KEY_S)) {
             dz = 1;
