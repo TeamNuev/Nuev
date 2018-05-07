@@ -34,6 +34,9 @@ public class GameWindow {
 
         this.handle = handle;
         this.title = title;
+        
+        this.windowState = WindowState.NORMAL;
+        this.windowMode = WindowMode.RESIZABLE;
     }
 
     public long getHandle(){
