@@ -1,7 +1,6 @@
 package ga.nullcraft.global.mod.loader;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -26,28 +25,23 @@ public class LocalFullModLoader implements ILocalModLoader {
 
 	ModStorage modStorage;
 	URLClassLoader classLoader;
-	List<String> mainClasses;
 	List<NullMod> mods;
 	
 	public LocalFullModLoader(ModStorage modStorage) {
 		this.modStorage = modStorage;
 	}
-	
-	public void init() {
-		mods = new ArrayList<NullMod>();
-		loadMods();
-		addAllMods(mainClasses);
-	}
 
 	@Override
 	public void loadMods() {
+		mods = new ArrayList<NullMod>();
+		
 		File file = modStorage.getPath().toFile();
 		if(!file.exists() || !file.isDirectory()) {
 			file.mkdirs();
 		}
 		File[] files = file.listFiles();
 		List<URL> urls = new ArrayList<URL>();
-		mainClasses = new ArrayList<String>();
+		List<String> mainClasses = new ArrayList<String>();
 		for(File aFile : files) {
 			try {
 				JarFile jarFile = new JarFile(aFile);
@@ -63,6 +57,8 @@ public class LocalFullModLoader implements ILocalModLoader {
 			}
 		}
 		classLoader = new URLClassLoader(urls.toArray(new URL[urls.size()]));
+		
+		addAllMods(mainClasses);
 	}
 
 	private void addAllMods(List<String> mainClasses) {
