@@ -6,5 +6,6 @@ package ga.nullcraft.global.registry;
  * @author TNuev
  *
  */
+@Deprecated
 public interface IRegistry {
 }

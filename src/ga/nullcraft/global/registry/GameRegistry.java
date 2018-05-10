@@ -13,6 +13,7 @@ import java.util.Map;
  *
  * @author TNuev
  */
+@Deprecated
 public class GameRegistry implements IRegistry {
 
     Map<String, IItem> itemMap;

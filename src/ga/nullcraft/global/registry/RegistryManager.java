@@ -9,6 +9,7 @@ import java.util.Map;
  * @author TNuev
  *
  */
+@Deprecated
 public class RegistryManager {
 
     private Map<String, IRegistry> registryMap;
