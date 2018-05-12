@@ -145,25 +145,25 @@ public class NullcraftClient implements IKeyboardListener, IMouseListener {
         if (e.isKeyPressed(GLFW.GLFW_KEY_W)) {
             dz = -1;
         }
-        else if (e.isKeyPressed(GLFW.GLFW_KEY_S)) {
+        if (e.isKeyPressed(GLFW.GLFW_KEY_S)) {
             dz = 1;
         }
         if (e.isKeyPressed(GLFW.GLFW_KEY_A)) {
             dx = -1;
         }
-        else if (e.isKeyPressed(GLFW.GLFW_KEY_D)) {
+        if (e.isKeyPressed(GLFW.GLFW_KEY_D)) {
             dx = 1;
         }
         if (e.isKeyPressed(GLFW.GLFW_KEY_LEFT_SHIFT)) {
             dy = -1;
         }
-        else if (e.isKeyPressed(GLFW.GLFW_KEY_SPACE)) {
+        if (e.isKeyPressed(GLFW.GLFW_KEY_SPACE)) {
             dy = 1;
         }
         if (e.isKeyPressed(GLFW.GLFW_KEY_UP)) {
             MOUSE_SENSITIVITY += 0.02f;
         }
-        else if (e.isKeyPressed(GLFW.GLFW_KEY_DOWN)) {
+        if (e.isKeyPressed(GLFW.GLFW_KEY_DOWN)) {
             MOUSE_SENSITIVITY -= 0.02f;
         }
         if (e.isKeyPressed(GLFW.GLFW_KEY_ESCAPE)) {
