@@ -43,6 +43,7 @@ public class NullcraftClient implements IKeyboardListener, IMouseListener {
     private float dx;
     private float dy;
     private float dz;
+    private boolean mouseLocked = true;
     private float MOUSE_SENSITIVITY = 0.2f;
 	private NuevMeshItem[] meshItems;
 
@@ -165,6 +166,9 @@ public class NullcraftClient implements IKeyboardListener, IMouseListener {
         else if (e.isKeyPressed(GLFW.GLFW_KEY_DOWN)) {
             MOUSE_SENSITIVITY -= 0.02f;
         }
+        if (e.isKeyPressed(GLFW.GLFW_KEY_ESCAPE)) {
+        	mouseLocked = !mouseLocked;
+        }
     }
 
     @Override
@@ -175,8 +179,10 @@ public class NullcraftClient implements IKeyboardListener, IMouseListener {
     @Override
     public void onMouseMove(MouseMoveEvent e) {
         camera.movePosition(dx * 0.05f, dy * 0.05f, dz * 0.05f);
-
-        e.getInput().setPosition(getWindowManager().getWindow().getWidth()/2, getWindowManager().getWindow().getHeight()/2);
+        
+        if(mouseLocked) {
+        	e.getInput().setPosition(getWindowManager().getWindow().getWidth()/2, getWindowManager().getWindow().getHeight()/2);
+        }
 
         camera.moveRotation((float) e.getDeltaX() * MOUSE_SENSITIVITY, (float) e.getDeltaY() * MOUSE_SENSITIVITY, 0);
     }
