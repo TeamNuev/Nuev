@@ -1,18 +1,18 @@
 package ga.nullcraft.client.local;
 
-import ga.nullcraft.client.NullcraftClient;
+import ga.nullcraft.client.NuevClient;
 import ga.nullcraft.global.IGameDirectory;
 import ga.nullcraft.server.NullcraftServer;
 
 public class LocalServer extends NullcraftServer {
 
-    private NullcraftClient client;
+    private NuevClient client;
 
-    public LocalServer(NullcraftClient client){
+    public LocalServer(NuevClient client){
         this.client = client;
     }
 
-    public NullcraftClient getClient() {
+    public NuevClient getClient() {
         return client;
     }
 

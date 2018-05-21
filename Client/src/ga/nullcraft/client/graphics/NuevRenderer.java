@@ -3,6 +3,7 @@ package ga.nullcraft.client.graphics;
 import ga.nullcraft.client.window.GameWindow;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GLUtil;
 
 import ga.nullcraft.client.resource.ShaderLoader;
 

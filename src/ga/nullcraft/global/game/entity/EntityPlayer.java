@@ -1,8 +1,11 @@
 package ga.nullcraft.global.game.entity;
 
 import ga.nullcraft.global.game.data.NullDataSet;
+import ga.nullcraft.global.game.world.World;
 
 public class EntityPlayer implements IEntity {
+	
+	private World world;
 	
 	private float posX;
 	private float posY;
@@ -11,7 +14,7 @@ public class EntityPlayer implements IEntity {
 	private float rotY;
 	private float rotZ;
 	
-	public EntityPlayer(float spawnX, float spawnY, float spawnZ) {
+	public EntityPlayer(World world, float spawnX, float spawnY, float spawnZ) {
 		posX = spawnX;
 		posY = spawnY;
 		posZ = spawnZ;
@@ -78,5 +81,9 @@ public class EntityPlayer implements IEntity {
 	
 	public float getRotZ() {
 		return rotZ;
+	}
+	
+	public World getWorld() {
+		return world;
 	}
 }

@@ -35,7 +35,7 @@ public class LaunchManager {
 		OptionSet options = parser.parse(args);
     	List<String> nonOptionList = options.valuesOf(nonOptions);
 
-		NullcraftClient client = new NullcraftClient(Paths.get(options.valueOf(gameDir)));
+		NuevClient client = new NuevClient(Paths.get(options.valueOf(gameDir)));
 		WindowManager windowManager = new WindowManager("Nuev");
 
 		windowManager.run(client);

@@ -1,6 +1,6 @@
 package ga.nullcraft.client.window;
 
-import ga.nullcraft.client.NullcraftClient;
+import ga.nullcraft.client.NuevClient;
 import ga.nullcraft.client.audio.AudioManager;
 import ga.nullcraft.client.platform.input.InputManager;
 import ga.nullcraft.client.thread.*;
@@ -24,7 +24,7 @@ public class WindowManager {
     public static final int DEFAULT_WIDTH = 800;
     public static final int DEFAULT_HEIGHT = 500;
 
-    private NullcraftClient client;
+    private NuevClient client;
 
     private UpdateThread updateThread;
     private RenderThread renderThread;
@@ -124,7 +124,7 @@ public class WindowManager {
         return audiothread;
     }
 
-    public void run(NullcraftClient client) throws Exception {
+    public void run(NuevClient client) throws Exception {
         if (isStarted)
             throw new Exception("Client already started with this window");
         this.isStarted = true;
