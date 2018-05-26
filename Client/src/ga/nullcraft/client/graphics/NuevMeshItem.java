@@ -3,17 +3,23 @@ package ga.nullcraft.client.graphics;
 import org.joml.Vector3f;
 
 public class NuevMeshItem {
-	
-    private final Mesh mesh;
+    private Mesh mesh;
+    
     private final Vector3f position;
+    
     private float scale;
+
     private final Vector3f rotation;
 
-    public NuevMeshItem(Mesh mesh) {
-        this.mesh = mesh;
+    public NuevMeshItem() {
         position = new Vector3f(0, 0, 0);
         scale = 1;
         rotation = new Vector3f(0, 0, 0);
+    }
+    
+    public NuevMeshItem(Mesh mesh) {
+        this();
+        this.mesh = mesh;
     }
 
     public Vector3f getPosition() {
@@ -43,8 +49,11 @@ public class NuevMeshItem {
         this.rotation.y = y;
         this.rotation.z = z;
     }
-
+    
     public Mesh getMesh() {
         return mesh;
     }
-}
+    
+    public void setMesh(Mesh mesh) {
+        this.mesh = mesh;
+    }}

@@ -6,6 +6,8 @@ import ga.nullcraft.client.audio.AudioManager;
 import ga.nullcraft.client.graphics.Mesh;
 import ga.nullcraft.client.graphics.NuevMeshItem;
 import ga.nullcraft.client.graphics.NuevRenderer;
+import ga.nullcraft.client.graphics.NuevTexture;
+import ga.nullcraft.client.graphics.ObjLoader;
 import ga.nullcraft.client.graphics.PlayerCamera;
 import ga.nullcraft.client.listener.KeyboardListener;
 import ga.nullcraft.client.listener.MouseListener;
@@ -14,7 +16,6 @@ import ga.nullcraft.client.model.ModelManager;
 import ga.nullcraft.client.storage.TempStorage;
 import ga.nullcraft.client.window.WindowManager;
 import ga.nullcraft.global.game.entity.EntityPlayer;
-import ga.nullcraft.global.game.world.World;
 import ga.nullcraft.global.mod.loader.LocalFullModLoader;
 import ga.nullcraft.global.mod.loader.LocalHalfModLoader;
 
@@ -77,22 +78,9 @@ public class NuevClient {
 
         renderer.init(getWindowManager().getWindow());
 		
-        float[] positions = new float[]{
-            -0.5f,  0.5f, -1.0f,
-            -0.5f, -0.5f, -1.0f,
-             0.5f, -0.5f, -1.0f,
-             0.5f,  0.5f, -1.0f,
-        };
-        float[] colours = new float[]{
-            0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f,
-        };
-        int[] indices = new int[]{
-            0, 1, 3, 3, 1, 2,
-        };
-        Mesh mesh = new Mesh(positions, colours, indices);
+        Mesh mesh = ObjLoader.loadMesh("/testObj.obj");
+        NuevTexture texture = new NuevTexture("/textures/grassblock.png");
+        mesh.setTexture(texture);
         NuevMeshItem item = new NuevMeshItem(mesh);
         item.setPosition(0.0f, 0.0f, 0.0f);
         meshItems = new NuevMeshItem[] { item };
@@ -105,7 +93,7 @@ public class NuevClient {
 	public void cleanup() {
 		renderer.cleanup();
 		for(NuevMeshItem item : meshItems) {
-			item.getMesh().cleanup();
+			item.getMesh().cleanUp();
 		}
 	}
     
