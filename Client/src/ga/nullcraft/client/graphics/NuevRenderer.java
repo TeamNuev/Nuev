@@ -75,8 +75,8 @@ public class NuevRenderer {
 	
 	private void setUpHudShader() throws Exception {
 		hudShader = new NuevShader();
-		hudShader.createVertexShader(loader.loadShader("vertex.vs"));
-		hudShader.createFragmentShader(loader.loadShader("vertex.vs"));
+		hudShader.createVertexShader(loader.loadShader("vertex_gui.vs"));
+		hudShader.createFragmentShader(loader.loadShader("fragment_gui.fs"));
 		hudShader.linkShader();
 		
 		// Create uniforms for Ortographic-model projection matrix and base colour
