@@ -3,6 +3,7 @@ package ga.nullcraft.client;
 import java.nio.file.Path;
 
 import ga.nullcraft.client.audio.AudioManager;
+import ga.nullcraft.client.graphics.IHud;
 import ga.nullcraft.client.graphics.Mesh;
 import ga.nullcraft.client.graphics.NuevMeshItem;
 import ga.nullcraft.client.graphics.NuevRenderer;
@@ -14,7 +15,6 @@ import ga.nullcraft.client.model.ModelManager;
 import ga.nullcraft.client.storage.TempStorage;
 import ga.nullcraft.client.window.WindowManager;
 import ga.nullcraft.global.game.entity.EntityPlayer;
-import ga.nullcraft.global.game.world.World;
 import ga.nullcraft.global.mod.loader.LocalFullModLoader;
 import ga.nullcraft.global.mod.loader.LocalHalfModLoader;
 
@@ -40,6 +40,8 @@ public class NuevClient {
 	private KeyboardListener keyboardListener;
 	
 	private EntityPlayer player;
+	
+	private IHud hud;
 
     public NuevClient(Path dataDir){
     	client = this;
@@ -99,13 +101,14 @@ public class NuevClient {
 	}
 	
 	public void render() {
-        renderer.render(getWindowManager().getWindow(), camera, meshItems);
+        renderer.renderScene(getWindowManager().getWindow(), camera, meshItems);
+        renderer.renderHud(getWindowManager().getWindow(), hud);
 	}
 
-	public void cleanup() {
-		renderer.cleanup();
+	public void cleanUp() {
+		renderer.cleanUp();
 		for(NuevMeshItem item : meshItems) {
-			item.getMesh().cleanup();
+			item.getMesh().cleanUp();
 		}
 	}
     

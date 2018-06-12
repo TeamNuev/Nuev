@@ -83,7 +83,7 @@ public class Mesh {
 		return vertexCount;
 	}
 	
-	public void cleanup() {
+	public void cleanUp() {
 	    GL20.glDisableVertexAttribArray(0);
 
 	    GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);

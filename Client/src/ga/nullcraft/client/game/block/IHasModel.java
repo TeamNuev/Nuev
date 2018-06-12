@@ -1,4 +1,4 @@
-package ga.nullcraft.global.game.block;
+package ga.nullcraft.client.game.block;
 
 import ga.nullcraft.global.game.IHasData;
 
@@ -8,5 +8,5 @@ import ga.nullcraft.global.game.IHasData;
  * @author TNuev
  *
  */
-public interface IBlockWithData extends IHasData {
+public interface IHasModel extends IHasData {
 }

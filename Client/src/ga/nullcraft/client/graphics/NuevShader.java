@@ -83,7 +83,7 @@ public class NuevShader {
 		GL20.glUseProgram(0);
 	}
 	
-	public void cleanup() {
+	public void cleanUp() {
 		unbind();
 		if(programId != 0) {
 			GL20.glDeleteProgram(programId);
