@@ -27,7 +27,13 @@ public class NuevRenderer {
 		setUpHudShader();
 	}
 	
+	public void clear() {
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+	}
+	
 	public void renderScene(GameWindow window, ICamera camera, NuevMeshItem[] items) {
+		clear();
+		
 		sceneShader.bind();
 		
 		Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
@@ -60,8 +66,6 @@ public class NuevRenderer {
 
         hudShader.unbind();
 	}
-		
-		
 		
 	private void setUpSceneShader() throws Exception {
 		sceneShader = new NuevShader();

@@ -102,7 +102,7 @@ public class NuevClient {
 	
 	public void render() {
         renderer.renderScene(getWindowManager().getWindow(), camera, meshItems);
-        renderer.renderHud(getWindowManager().getWindow(), hud);
+        if(hud != null) renderer.renderHud(getWindowManager().getWindow(), hud);
 	}
 
 	public void cleanUp() {
