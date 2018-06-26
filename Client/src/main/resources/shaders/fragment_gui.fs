@@ -2,12 +2,12 @@
 
 in vec2 outTexCoord;
 in vec3 mvPos;
-out vec4 fragColor;
+out vec4 fragColour;
 
 uniform sampler2D texture_sampler;
-uniform vec4 color;
+uniform vec4 colour;
 
 void main()
 {
-    fragColor = color * texture(texture_sampler, outTexCoord);
+    fragColour = colour * texture(texture_sampler, outTexCoord);
 }
