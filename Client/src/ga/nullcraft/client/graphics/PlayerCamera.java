@@ -7,6 +7,7 @@ import ga.nullcraft.global.game.entity.EntityPlayer;
 public class PlayerCamera implements ICamera {
 	
 	private final EntityPlayer player;
+	boolean isLocked = true;
 	
 	public PlayerCamera(EntityPlayer player) {
 		this.player = player;
@@ -40,6 +41,13 @@ public class PlayerCamera implements ICamera {
 
 	@Override
 	public void moveRotation(float offsetX, float offsetY, float offsetZ) {
-		player.moveRotation(offsetX, offsetY, offsetZ);
+		if(!isLocked) {
+			player.moveRotation(offsetX, offsetY, offsetZ);
+		}
+	}
+
+	@Override
+	public void setLock(boolean lock) {
+		this.isLocked = lock;
 	}
 }

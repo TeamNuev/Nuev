@@ -1,10 +1,16 @@
 package ga.nullcraft.client.platform.input.mouse;
 
-import ga.nullcraft.client.platform.input.DeviceInput;
-import org.lwjgl.glfw.*;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWCursorPosCallback;
+import org.lwjgl.glfw.GLFWMouseButtonCallback;
+import org.lwjgl.glfw.GLFWScrollCallback;
+
+import ga.nullcraft.client.NuevClient;
+import ga.nullcraft.client.platform.input.DeviceInput;
+import ga.nullcraft.client.window.GameWindow;
 
 public class MouseInput extends DeviceInput {
 
@@ -23,6 +29,8 @@ public class MouseInput extends DeviceInput {
 
     private MouseInputHandler handler;
 
+    private boolean mouseLocked = false;
+    
     public MouseInput() {
         this.x = 0;
         this.y = 0;
@@ -63,6 +71,22 @@ public class MouseInput extends DeviceInput {
         return pressedButtonList.contains(button);
     }
 
+    public boolean isMouseLocked() {
+    	return mouseLocked;
+    }
+    
+    public void setMouseLock(boolean mouseLock) {
+    	NuevClient.getClient().getCamera().setLock(!mouseLock);
+    	if(mouseLock) {
+        	GLFW.glfwSetInputMode(windowHandle, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
+    	} else {
+    		GameWindow window = NuevClient.getClient().getWindowManager().getWindow();
+        	GLFW.glfwSetInputMode(windowHandle, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
+    		setPosition(window.getWidth()/2, window.getHeight()/2);
+    	}
+    	mouseLocked = mouseLock;
+    }
+    
     @Override
     protected void initializeDevice(long windowHandle) {
         this.windowHandle = windowHandle;

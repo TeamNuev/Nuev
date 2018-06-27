@@ -5,6 +5,7 @@ import org.lwjgl.glfw.GLFW;
 import ga.nullcraft.client.NuevClient;
 import ga.nullcraft.client.platform.input.keyboard.IKeyboardListener;
 import ga.nullcraft.client.platform.input.keyboard.KeyboardKeyEvent;
+import ga.nullcraft.client.platform.input.mouse.MouseInput;
 
 public class KeyboardListener implements IKeyboardListener {
 
@@ -48,7 +49,8 @@ public class KeyboardListener implements IKeyboardListener {
 			mouseListener.MOUSE_SENSITIVITY -= 0.02f;
 		}
 		if (e.isKeyPressed(GLFW.GLFW_KEY_ESCAPE)) {
-			mouseListener.mouseLocked = !mouseListener.mouseLocked;
+			MouseInput mouseInput = client.getWindowManager().getInput().getMouse();
+			mouseInput.setMouseLock(!mouseInput.isMouseLocked());
 		}
 	}
 

@@ -3,6 +3,7 @@ package ga.nullcraft.client;
 import java.nio.file.Path;
 
 import ga.nullcraft.client.audio.AudioManager;
+import ga.nullcraft.client.graphics.ICamera;
 import ga.nullcraft.client.graphics.IHud;
 import ga.nullcraft.client.graphics.Mesh;
 import ga.nullcraft.client.graphics.NuevMeshItem;
@@ -150,6 +151,10 @@ public class NuevClient {
     
     public EntityPlayer getPlayer() {
     	return player;
+    }
+    
+    public ICamera getCamera() {
+    	return camera;
     }
 
     public void update() {

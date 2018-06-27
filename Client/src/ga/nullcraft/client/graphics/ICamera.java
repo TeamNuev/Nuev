@@ -15,4 +15,6 @@ public interface ICamera {
 	public void setRotation(float x, float y, float z);
 	
 	public void moveRotation(float offsetX, float offsetY, float offsetZ);
+
+	public void setLock(boolean b);
 }

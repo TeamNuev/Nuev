@@ -9,7 +9,6 @@ import ga.nullcraft.client.platform.input.mouse.WheelEvent;
 
 public class MouseListener implements IMouseListener {
 
-    boolean mouseLocked = true;
     float MOUSE_SENSITIVITY = 0.2f;
     
     private NuevClient client = NuevClient.getClient();
@@ -21,11 +20,7 @@ public class MouseListener implements IMouseListener {
     
     @Override
     public void onMouseMove(MouseMoveEvent e) {
-        if(mouseLocked) {
-        	e.getInput().setPosition(client.getWindowManager().getWindow().getWidth()/2, client.getWindowManager().getWindow().getHeight()/2);
-        }
-
-        camera.moveRotation((float) e.getDeltaX() * MOUSE_SENSITIVITY, (float) e.getDeltaY() * MOUSE_SENSITIVITY, 0);
+    	camera.moveRotation((float) e.getDeltaY() * MOUSE_SENSITIVITY, (float) e.getDeltaX() * MOUSE_SENSITIVITY, 0);
     }
 
     @Override
