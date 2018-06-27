@@ -1,29 +1,30 @@
 package ga.nullcraft.client.window;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.nio.IntBuffer;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 import org.lwjgl.system.MemoryUtil;
-
-import java.nio.IntBuffer;
 
 public class GameWindow {
 
     private final long handle;
 
     private String title;
+    
+    private boolean isResized;
 
     private WindowState windowState;
     private WindowMode windowMode;
 
-    public GameWindow(String title, int width, int height){
-        this(createWindow(title, width, height), title);
-
-        setSize(width, height);
+    public GameWindow(String title, int width, int height, boolean isFullScreen){
+        this(createWindow(title, width, height, isFullScreen), title);
     }
 
-    public GameWindow(String title, int clientX, int clientY, int width, int height){
-        this(title, width, height);
+    public GameWindow(String title, int clientX, int clientY, int width, int height, boolean isFullScreen){
+        this(title, width, height, isFullScreen);
 
         setClientLocation(clientX, clientY);
     }
@@ -197,6 +198,14 @@ public class GameWindow {
     public void setHeight(int height){
         setSize(getWidth(), height);
     }
+    
+    public boolean isResized() {
+    	return isResized;
+    }
+    
+    public void setResized(boolean resized) {
+    	this.isResized = resized;
+    }
 
     public void setTitle(String title){
         if (title == null || title.equals(getTitle()))
@@ -223,7 +232,12 @@ public class GameWindow {
         GLFW.glfwDestroyWindow(getHandle());
     }
 
-    public static long createWindow(String title, int width, int height){
-        return GLFW.glfwCreateWindow(640, 480, title, MemoryUtil.NULL, MemoryUtil.NULL);
+    public static long createWindow(String title, int width, int height, boolean isFullScreen){
+    	if(isFullScreen) {
+    		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    		width = screenSize.width;
+    		height = screenSize.height;
+    	}
+        return GLFW.glfwCreateWindow(width, height, title, ((isFullScreen) ? GLFW.glfwGetPrimaryMonitor() : MemoryUtil.NULL), MemoryUtil.NULL); 
     }
 }

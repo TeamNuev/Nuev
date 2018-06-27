@@ -4,7 +4,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import ga.nullcraft.client.window.GameWindow;
 import ga.nullcraft.client.window.WindowManager;
 import joptsimple.ArgumentAcceptingOptionSpec;
 import joptsimple.NonOptionArgumentSpec;
@@ -36,7 +35,7 @@ public class LaunchManager {
     	List<String> nonOptionList = options.valuesOf(nonOptions);
 
 		NuevClient client = new NuevClient(Paths.get(options.valueOf(gameDir)));
-		WindowManager windowManager = new WindowManager("Nuev");
+		WindowManager windowManager = new WindowManager("Nuev", options.valueOf(width), options.valueOf(height), options.valueOf(isFullScreen));
 
 		windowManager.run(client);
 	}

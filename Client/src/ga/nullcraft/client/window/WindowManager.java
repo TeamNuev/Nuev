@@ -1,15 +1,18 @@
 package ga.nullcraft.client.window;
 
-import ga.nullcraft.client.NuevClient;
-import ga.nullcraft.client.audio.AudioManager;
-import ga.nullcraft.client.platform.input.InputManager;
-import ga.nullcraft.client.thread.*;
-import ga.nullcraft.client.window.util.DisplayUtil;
-import ga.nullcraft.client.window.util.MonitorInfo;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
+
+import ga.nullcraft.client.NuevClient;
+import ga.nullcraft.client.audio.AudioManager;
+import ga.nullcraft.client.platform.input.InputManager;
+import ga.nullcraft.client.thread.AudioThread;
+import ga.nullcraft.client.thread.InputThread;
+import ga.nullcraft.client.thread.RenderThread;
+import ga.nullcraft.client.thread.UpdateThread;
+import ga.nullcraft.client.window.util.DisplayUtil;
 
 /**
  * Manage game window
@@ -37,6 +40,10 @@ public class WindowManager {
     private boolean isStarted;
 
     private String name;
+    
+    private int width;
+    private int height;
+    private boolean isFullScreen;
 
     private GameWindow window;
 
@@ -66,8 +73,12 @@ public class WindowManager {
         return currentWindow;
     }
 
-    public WindowManager(String name){
+    public WindowManager(String name, int width, int height, boolean isFullScreen){
         this.name = name;
+        
+        this.width = (width <= 0) ? DEFAULT_WIDTH : width;
+        this.height = (height <= 0) ? DEFAULT_HEIGHT : height;
+        this.isFullScreen = isFullScreen;
 
         this.input = new InputManager(this);
         this.audio = new AudioManager(this);
@@ -137,8 +148,14 @@ public class WindowManager {
         GLFWErrorCallback.createPrint(System.err).set();
 
         hintWindow();
-        this.window = new GameWindow(getName(), DEFAULT_WIDTH, DEFAULT_HEIGHT);
-
+        this.window = new GameWindow(getName(), width, height, isFullScreen);
+        
+        GLFW.glfwSetFramebufferSizeCallback(window.getHandle(), (window, width, height) -> {
+            this.width = width;
+            this.height = height;
+            this.window.setResized(true);
+        });
+        
         this.updateThread = new UpdateThread(this.updateTask());
         this.renderThread = new RenderThread(this.renderTask()){
           @Override

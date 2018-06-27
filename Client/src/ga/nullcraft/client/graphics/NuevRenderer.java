@@ -34,6 +34,11 @@ public class NuevRenderer {
 	public void renderScene(GameWindow window, ICamera camera, NuevMeshItem[] items) {
 		clear();
 		
+	    if (window.isResized() ) {
+	        GL11.glViewport(0, 0, window.getWidth(), window.getHeight());
+	        window.setResized(false);
+	    }
+	    
 		sceneShader.bind();
 		
 		Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
