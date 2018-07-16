@@ -1,4 +1,4 @@
-package ga.nullcraft.client.graphics;
+package ga.nullcraft.client.graphics.base;
 
 import ga.nullcraft.client.window.GameWindow;
 import org.joml.Matrix4f;

@@ -1,4 +1,4 @@
-package ga.nullcraft.client.graphics;
+package ga.nullcraft.client.graphics.base;
 
 public interface IHud {
 

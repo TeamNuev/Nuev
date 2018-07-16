@@ -7,12 +7,16 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import ga.nullcraft.global.mod.NullMod;
+import ga.nullcraft.global.registry.Registry;
+import ga.nullcraft.global.registry.RegistryMain;
 import ga.nullcraft.global.storage.ModStorage;
 
 /**
@@ -36,6 +40,7 @@ public class LocalFullModLoader implements ILocalModLoader {
 		mods = new ArrayList<NullMod>();
 		
 		File file = modStorage.getPath().toFile();
+		System.out.println(file.getAbsolutePath());
 		if(!file.exists() || !file.isDirectory()) {
 			file.mkdirs();
 		}
@@ -59,6 +64,24 @@ public class LocalFullModLoader implements ILocalModLoader {
 		classLoader = new URLClassLoader(urls.toArray(new URL[urls.size()]));
 		
 		addAllMods(mainClasses);
+		
+		for(NullMod mod : mods) {
+			RegistryMain registryMain = mod.getRegistryMain();
+			if(registryMain != null) {
+				Map<String, Registry<?>> registries = registryMain.getRegistry();
+	
+				Iterator<String> registryIterator = registries.keySet().iterator();
+				while(registryIterator.hasNext()) {
+					String registryName = registryIterator.next();
+					Map<String, ?> registryMap = registries.get(registryName).getRegistry();
+					Iterator<?> objectIterator = registryMap.values().iterator();
+					while(objectIterator.hasNext()) {
+						Object obj = objectIterator.next();
+						register(registryName, obj);
+					}
+				}
+			}
+		}
 	}
 
 	private void addAllMods(List<String> mainClasses) {
@@ -79,4 +102,7 @@ public class LocalFullModLoader implements ILocalModLoader {
 			}
 		}
 	}
+	
+	protected void register(String registryName, Object object) {}
+	
 }

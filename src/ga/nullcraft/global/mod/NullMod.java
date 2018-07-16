@@ -2,6 +2,8 @@ package ga.nullcraft.global.mod;
 
 import java.util.UUID;
 
+import ga.nullcraft.global.registry.RegistryMain;
+
 /**
  * A basic mod class.
  * You can declare mod by extending this class.
@@ -16,6 +18,8 @@ public abstract class NullMod implements IMod {
     private final String namespace;
 
     private final String version;
+    
+    protected RegistryMain registry;
 
     public NullMod(String name, UUID uuid, String namespace, String version) {
         this.name = name;
@@ -38,5 +42,9 @@ public abstract class NullMod implements IMod {
 
     public final String getVersion() {
         return version;
+    }
+    
+    public final RegistryMain getRegistryMain() {
+    	return registry;
     }
 }

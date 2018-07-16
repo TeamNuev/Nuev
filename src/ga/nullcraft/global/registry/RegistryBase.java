@@ -14,6 +14,10 @@ public abstract class RegistryBase<T> {
 	private String namespace;
 	private Map<String, T> registry;
 	
+	RegistryBase(String namespace) {
+		setNamespace(namespace);
+	}
+	
 	/**
 	 * Registers something.
 	 * 
@@ -47,7 +51,7 @@ public abstract class RegistryBase<T> {
 	 * 
 	 * @param namespace
 	 */
-	protected void setNamespace(String namespace) {
+	private void setNamespace(String namespace) {
 		this.namespace = namespace;
 	}
 	
@@ -57,5 +61,13 @@ public abstract class RegistryBase<T> {
 	 */
 	public String getNamespace() {
 		return namespace;
+	}
+	
+	/**
+	 * 
+	 * @return registry
+	 */
+	public Map<String, T> getRegistry() {
+		return registry;
 	}
 }

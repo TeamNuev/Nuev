@@ -1,4 +1,4 @@
-package ga.nullcraft.client.graphics;
+package ga.nullcraft.client.graphics.base;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;

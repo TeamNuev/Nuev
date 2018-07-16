@@ -1,11 +1,10 @@
-package ga.nullcraft.client.listener;
+package ga.nullcraft.client.platform.input.keyboard;
 
 import org.lwjgl.glfw.GLFW;
 
 import ga.nullcraft.client.NuevClient;
-import ga.nullcraft.client.platform.input.keyboard.IKeyboardListener;
-import ga.nullcraft.client.platform.input.keyboard.KeyboardKeyEvent;
 import ga.nullcraft.client.platform.input.mouse.MouseInput;
+import ga.nullcraft.client.platform.input.mouse.MouseListener;
 
 public class KeyboardListener implements IKeyboardListener {
 

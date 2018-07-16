@@ -1,7 +1,7 @@
 package ga.nullcraft.client.graphics.defaulthud;
 
-import ga.nullcraft.client.graphics.IHud;
-import ga.nullcraft.client.graphics.NuevMeshItem;
+import ga.nullcraft.client.graphics.base.IHud;
+import ga.nullcraft.client.graphics.base.NuevMeshItem;
 
 public class CommandHud implements IHud {
 

@@ -3,16 +3,16 @@ package ga.nullcraft.client;
 import java.nio.file.Path;
 
 import ga.nullcraft.client.audio.AudioManager;
-import ga.nullcraft.client.graphics.ICamera;
-import ga.nullcraft.client.graphics.IHud;
-import ga.nullcraft.client.graphics.Mesh;
-import ga.nullcraft.client.graphics.NuevMeshItem;
-import ga.nullcraft.client.graphics.NuevRenderer;
-import ga.nullcraft.client.graphics.PlayerCamera;
-import ga.nullcraft.client.listener.KeyboardListener;
-import ga.nullcraft.client.listener.MouseListener;
+import ga.nullcraft.client.graphics.base.ICamera;
+import ga.nullcraft.client.graphics.base.IHud;
+import ga.nullcraft.client.graphics.base.Mesh;
+import ga.nullcraft.client.graphics.base.NuevMeshItem;
+import ga.nullcraft.client.graphics.base.NuevRenderer;
+import ga.nullcraft.client.graphics.base.PlayerCamera;
 import ga.nullcraft.client.local.LocalGameDirectory;
 import ga.nullcraft.client.model.ModelManager;
+import ga.nullcraft.client.platform.input.keyboard.KeyboardListener;
+import ga.nullcraft.client.platform.input.mouse.MouseListener;
 import ga.nullcraft.client.storage.TempStorage;
 import ga.nullcraft.client.window.WindowManager;
 import ga.nullcraft.global.game.entity.EntityPlayer;
@@ -87,10 +87,10 @@ public class NuevClient {
              0.5f,  0.5f, -1.0f,
         };
         float[] colours = new float[]{
-            0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f,
+            0.3f, 0.5f, 0.5f,
+            0.4f, 0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
+            0.6f, 0.5f, 0.5f,
         };
         int[] indices = new int[]{
             0, 1, 3, 3, 1, 2,

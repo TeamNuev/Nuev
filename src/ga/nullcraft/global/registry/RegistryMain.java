@@ -7,10 +7,10 @@ package ga.nullcraft.global.registry;
  * @author TNuev
  *
  */
-public class RegistryMain extends RegistryBase<RegistryBase<?>> {
+public class RegistryMain extends Registry<Registry<?>> {
 
 	RegistryMain(String namespace) {
-		this.setNamespace(namespace);
+		super(namespace);
 	}
 	
 	public boolean addRegistry(String name, Registry<?> registry) {

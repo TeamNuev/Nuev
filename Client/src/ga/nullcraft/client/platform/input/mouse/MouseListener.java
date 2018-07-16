@@ -1,15 +1,11 @@
-package ga.nullcraft.client.listener;
+package ga.nullcraft.client.platform.input.mouse;
 
 import ga.nullcraft.client.NuevClient;
-import ga.nullcraft.client.graphics.PlayerCamera;
-import ga.nullcraft.client.platform.input.mouse.IMouseListener;
-import ga.nullcraft.client.platform.input.mouse.MouseButtonEvent;
-import ga.nullcraft.client.platform.input.mouse.MouseMoveEvent;
-import ga.nullcraft.client.platform.input.mouse.WheelEvent;
+import ga.nullcraft.client.graphics.base.PlayerCamera;
 
 public class MouseListener implements IMouseListener {
 
-    float MOUSE_SENSITIVITY = 0.2f;
+    public float MOUSE_SENSITIVITY = 0.2f;
     
     private NuevClient client = NuevClient.getClient();
     private PlayerCamera camera;

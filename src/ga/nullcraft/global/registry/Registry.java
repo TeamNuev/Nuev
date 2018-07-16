@@ -9,6 +9,10 @@ package ga.nullcraft.global.registry;
  */
 public class Registry<T> extends RegistryBase<T> {
 
+	Registry(String namespace) {
+		super(namespace);
+	}
+
 	public boolean register(String name, T object) {
 		return super.register(name, object);
 	}
